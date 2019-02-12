@@ -16,11 +16,11 @@ Feature: AR OP Consolidated HTML Email Generation
 
   @production
   Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
-    Given a DGS instance containing the production templates
-    When a document is generated from template <template_key> using data context <context_path>
+    #Given a DGS instance containing the production templates
+    When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     Then the generated document is stored in the MDS
-    AND the generated document is rendered correctly
+    And the generated document is rendered correctly
 
     Examples: templates and contexts
-    | template_key                               | context_path                                                |
-    | ar_op_friendly_reminder_consolidated_email | etc/test_contexts/ar-op-friendly-reminder-consolidated.json |
+    | template_key                               | output_type | context_path                                                |
+    | ar_op_friendly_reminder_consolidated_email | text/html   | etc/test_contexts/ar-op-friendly-reminder-consolidated.json |

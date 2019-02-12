@@ -6,10 +6,11 @@ of the TSBC Non-Compliance APIs.
 
 import logging
 import os
+import pprint
 import shlex
 import subprocess
 
-from . import tsbc_nc_api_ability
+from . import dgs_api_ability
 from . import base
 from . import constants as c
 
@@ -32,4 +33,4 @@ class TSBCNCUser(base.Base):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.api = tsbc_nc_api_ability.TSBCNCAPIAbility(**kwargs)
+        self.dgs = dgs_api_ability.DGSAPIAbility(**kwargs)

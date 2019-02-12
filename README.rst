@@ -132,8 +132,7 @@ TSBC-NC-AUAT::
         -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
         -D dgs_access_token=<DGS_TOKEN> \
         -D ess_url=http://127.0.0.1:61780/micros/ess/v1/api/ \
-        -D ess_access_token=<ESS_TOKEN> \
-        -D driver_name=Firefox
+        -D ess_access_token=<ESS_TOKEN>
 
 The command given above is interpreted as follows.
 
@@ -148,11 +147,9 @@ The command given above is interpreted as follows.
   print statements to appear in stdout.
 - The ``--stop`` flag tells Behave to stop running the tests as soon as there
   is a single failure.
-- The rest of the ``-D``-style flags are Behave *user data*:
-
-  - The ``-D driver_name=Firefox`` flag tells Behave to use the Firefox browser.
-  - Finally, the remaining user data flags provide Behave with the URLs and
-    authentication details of particular TSBC NC API instances.
+- The rest of the ``-D``-style flags are Behave *user data*. These user data
+  flags provide Behave with the URLs and authentication details of particular
+  TSBC NC API instances.
 
 To see all of the Behave user data flags that the TSBC-NC-AUAT recognizes, inspect the
 ``get_tsbc_nc_user`` function of the ``features/environment.py`` module.
