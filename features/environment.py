@@ -38,6 +38,14 @@ QUICK_WAIT = 0.5
 MICRO_WAIT = 0.25
 
 
+def str2bool(thing):
+    if isinstance(thing, bool):
+        return thing
+    if thing.strip().lower() in ('true', 'y', 'yes', '1'):
+        return True
+    return False
+
+
 def get_tsbc_nc_user(userdata):
     """Instantiate a TSBCNCUser."""
     userdata.update({
@@ -45,6 +53,7 @@ def get_tsbc_nc_user(userdata):
         'dgs_access_token': userdata.get('dgs_access_token', DGS_ACCESS_TOKEN),
         'ess_url': userdata.get('ess_url', ESS_URL),
         'ess_access_token': userdata.get('ess_access_token', ESS_ACCESS_TOKEN),
+        'clean_up': str2bool(userdata.get('clean_up', 'true')),
         'driver_name': userdata.get('driver_name', DRIVER_NAME),
         'ssh_accessible': bool(
             userdata.get('ssh_accessible', SSH_ACCESSIBLE)),
@@ -69,7 +78,7 @@ def get_tsbc_nc_user(userdata):
 def before_all(context):
     logging_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     context.config.setup_logging(format=logging_format)
-    logger = logging.getLogger()
+    logger = logging.getLogger('environment')
     log_filename = 'TSBC-NC-AUAT.log'
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     log_path = os.path.join(root_path, log_filename)
@@ -88,4 +97,5 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     """Do some clean up after each scenario is run."""
-    pass
+    if context.tsbc_nc_user.clean_up:
+        context.tsbc_nc_user.clear_tmp_dir()

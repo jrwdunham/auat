@@ -1,5 +1,6 @@
 TSBC-NC-AUAT.log
 data/
+.tsbc-nc-tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

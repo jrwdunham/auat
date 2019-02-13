@@ -1,25 +1,30 @@
-TSBC NC Automated User Acceptance Tests (TSBC-NC-AUAT)
-================================================================================
+********************************************************************************
+  TSBC NC Automated User Acceptance Tests
+********************************************************************************
 
 This repository contains automated user acceptance tests for the TSBC NC APIs
-written using the Python behave_ library and the Gherkin_ language. Using
+written using the Python `behave library`_ and the Gherkin_ language. Using
 Gherkin to express tests makes them readable to a wide range of TSBC
 users and stakeholders [1]_. Consider the following snippet from the *AR OP
-Consolidated Email Generation* feature file (``core.feature``)::
+Consolidated Email Generation* feature file
+(``generate-email-documents.feature``)::
 
+    @generate-ar-op-cons-emails
     Feature: AR OP Consolidated HTML Email Generation
       Clients of the TSBC NC APIs want to be able to generate HTML email documents
       using the Email Sending Service (ESS).
 
+      @production
       Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
-        Given a DGS instance containing the production templates
-        When a document is generated from template <template_key> using data context <context_path>
+        Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
+        When a document of type <output_type> is generated from template <template_key> using data context <context_path>
         Then the generated document is stored in the MDS
-        AND the generated document is rendered correctly
+        And the generated document is rendered correctly
 
         Examples: templates and contexts
-        | template_key                               | context_path                                                |
-        | ar_op_friendly_reminder_consolidated_email | etc/test_contexts/ar-op-friendly-reminder-consolidated.json |
+        | template_key                               | output_type | context_path                              |
+        | ar_op_friendly_reminder_consolidated_email | text/html   | ar-op-friendly-reminder-consolidated.json |
+        | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
 
 The ``Given``, ``When`` and ``Then`` statements in the feature files allow us
 to put the system into a known state, perform user actions, and then make
@@ -29,17 +34,7 @@ implemented by *step* functions in Python modules located in the
 APIs by calling methods of a ``TSBCNCUser`` instance as defined in the ``user``
 package. For detailed guidance on adding feature files, implementing steps, or
 adding user abilities, please see the `Developer documentation
-<docs/developer-documentation.rst>`_. For examples of using these tests to run
-(performance) experiments on TSBC APIs, see `Running Experiments with the
-TSBC-NC-AUAT <docs/running-experiments.rst>`_.
-
-
-Table of Contents
---------------------------------------------------------------------------------
-
-- `High-level overview`_
-- `Installation`_
-- `Usage`_
+<developer-documentation.html>`_.
 
 
 High-level overview
@@ -66,7 +61,7 @@ Compose), then the tests should be installed for you automatically.
 
 
 Installation quickstart
---------------------------------------------------------------------------------
+================================================================================
 
 The following list of commands illustrates the bare minimum required in order
 to install and run the tests. Note that a real-world invocation of the
@@ -84,7 +79,7 @@ read the `Detailed installation instructions`_ first.::
 
 
 Detailed installation instructions
---------------------------------------------------------------------------------
+================================================================================
 
 To install these tests manually, first create a virtual environment using Python
 3 and activate it::
@@ -101,8 +96,8 @@ Finally, install the Python dependencies::
     $ pip install -r requirements.txt
 
 
-Installing the TSBC NC APIs
---------------------------------------------------------------------------------
+Installing TSBC NC APIs
+================================================================================
 
 As mentioned previously, running the TSBC-NC-AUAT requires having existing
 TSBC NC API instances deployed. Describing how to do this is beyond the
@@ -173,7 +168,7 @@ should be executed and whether they need any special configuration (flags).
 
 
 Logging
---------------------------------------------------------------------------------
+================================================================================
 
 All log messages are written to a file named ``TSBC-NC-AUAT.log`` in the root
 directory. Passing the ``--no-logcapture`` flag to ``behave`` will cause all of
@@ -181,12 +176,12 @@ the log messages to also be written to stdout.
 
 
 Timeouts and attempt counters
---------------------------------------------------------------------------------
+================================================================================
 
 At various points, these tests wait for fixed periods of time or attempt to
 perform some action a fixed number of times before giving up the attempt. The
 variables holding these *wait* values are listed with their
-defaults in `features/environment.py`_. If you find that tests are failing
+defaults in ``features/environment.py``. If you find that tests are failing
 because of timeouts being exceeded, or conversely that tests that should be
 failing are waiting too long for an event that will never happen, you can
 modify these *wait* values using behave user data flags, e.g.,
@@ -199,8 +194,8 @@ modify these *wait* values using behave user data flags, e.g.,
    it does it. The `Behave documentation`_ provides a good overview of the key
    concepts and their origins in BDD.
 
-.. _behave: https://github.com/behave/behave
-.. _Gherkin: https://github.com/cucumber/cucumber/wiki/Gherkin
+.. _`behave library`: https://github.com/behave/behave
+.. _Gherkin: https://docs.cucumber.io/gherkin/
 .. _Requests: http://docs.python-requests.org/en/master/
 .. _nc: https://www.google.com/
 .. _`Docker Compose`: https://www.google.com/
