@@ -156,6 +156,15 @@ def invoice_changed_to_notice():
     return f
 
 
+def phone_number_for_payment_added():
+    def f(document_str):
+        if ('to renew your operating permit or by calling 1 866 566 7233'
+                ) not in document_str:
+            return ('TSBC\'s phone number was not provided as a payment'
+                    ' strategy.')
+    return f
+
+
 # Map 3-tuple recipes for document generation (template_key, context_path,
 # output_type) to tuples of "validators", functions that expect the generated
 # document as their sole argument.
@@ -196,6 +205,20 @@ VALIDATORS_BY_RECIPE = {
         ssgr_s18_italicized_present(),
         collection_mention_removed(),
         invoice_changed_to_notice(),
+    ),
+
+    Recipe(  # for Final Warning
+        template='ar_op_final_warning_consolidated_email',
+        context='ar-op-final-warning-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_total_amount_due_is('$3,300.00'),
+        confirm_notice_title_is(
+            'Final Warning Operating Permit Renewal Notice of Non-Compliance'),
+        fee_descr_col_is_present(),
+        account_number_invisi_table_is_twice_present(),
+        invoice_changed_to_notice(),
+        phone_number_for_payment_added(),
     ),
 
     Recipe(  # for Final Notice

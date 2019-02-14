@@ -34,4 +34,5 @@ Feature: AR OP Consolidated HTML Email Generation
     | ar_op_friendly_reminder_consolidated_email | text/html   | ar-op-friendly-reminder-consolidated.json |
     | ar_op_past_due_consolidated_email          | text/html   | ar-op-past-due-consolidated.json          |
     | ar_op_demand_consolidated_email            | text/html   | ar-op-demand-consolidated.json            |
+    | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
