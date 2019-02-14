@@ -60,6 +60,9 @@ def step_impl(context):
 
 @then('the generated document is rendered correctly')
 def step_impl(context):
+    """Using the validators declared in ``VALIDATORS_BY_RECIPE``, validate the
+    correct generation of the document.
+    """
     recipe = Recipe(
         template=context.scenario.generated_document_params['template_key'],
         context=context.scenario.generated_document_params['context_path'],
@@ -86,11 +89,8 @@ ACCOUNT_NUMBER_RIGHT_ALIGNED_TD = (
 
 def confirm_total_amount_due_is(total_amount_due):
     def f(document_str):
-        if (f'<td colspan=5 style="border: 1px solid #C1C7D0; margin: 0px;'
-            f' padding: 0.5em;">Total amount due for all invoices</td> <td'
-            f' style="border: 1px solid #C1C7D0; margin: 0px; padding: 0.5em;'
-            f' text-align: right;">{total_amount_due}</td>'
-            ) not in document_str:
+        if (('>Total amount due for all invoices</td>' not in document_str) or
+                (f'>{total_amount_due}</td>' not in document_str)):
             return (f'Failed to find total amount due {total_amount_due} in the'
                     ' document.')
     return f
@@ -111,6 +111,10 @@ def fee_descr_col_is_present():
         if FEE_DESCRIPTION_TH not in document_str:
             return f'Failed to locate a "fee description" table column'
     return f
+
+
+def fee_descr_col_is_NOT_present():
+    return lambda ds: not fee_descr_col_is_present()(ds)
 
 
 def account_number_invisi_table_is_twice_present():
@@ -169,6 +173,8 @@ def phone_number_for_payment_added():
 # output_type) to tuples of "validators", functions that expect the generated
 # document as their sole argument.
 VALIDATORS_BY_RECIPE = {
+
+    # AR OP NOTICES - START
 
     Recipe(  # for Friendly Reminder
         template='ar_op_friendly_reminder_consolidated_email',
@@ -231,6 +237,56 @@ VALIDATORS_BY_RECIPE = {
         fee_descr_col_is_present(),
         account_number_invisi_table_is_twice_present(),
     ),
+
+    # AR OP NOTICES - END
+
+    # AR GENERAL NOTICES - START
+
+    Recipe(  # for Past Due
+        template='ar_gen_past_due_consolidated_email',
+        context='ar-gen-past-due-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_total_amount_due_is('$3,300.00'),
+        confirm_notice_title_is('PAST DUE SUMMARY NOTICE'),
+        fee_descr_col_is_NOT_present(),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    Recipe(  # for Demand
+        template='ar_gen_demand_consolidated_email',
+        context='ar-gen-demand-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_total_amount_due_is('$3,300.00'),
+        confirm_notice_title_is('DEMAND SUMMARY NOTICE'),
+        fee_descr_col_is_NOT_present(),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    Recipe(  # for Final Warning
+        template='ar_gen_final_warning_consolidated_email',
+        context='ar-gen-final-warning-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_total_amount_due_is('$3,300.00'),
+        confirm_notice_title_is('FINAL WARNING SUMMARY NOTICE'),
+        fee_descr_col_is_NOT_present(),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    Recipe(  # for Final Notice
+        template='ar_gen_final_notice_consolidated_email',
+        context='ar-gen-final-notice-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_total_amount_due_is('$3,300.00'),
+        confirm_notice_title_is('FINAL NOTICE SUMMARY'),
+        fee_descr_col_is_NOT_present(),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    # AR GENERAL NOTICES - END
 
 }
 

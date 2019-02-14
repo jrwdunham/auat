@@ -17,12 +17,11 @@
 #           --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
 #           ...
 
-@generate-ar-op-cons-emails
-Feature: AR OP Consolidated HTML Email Generation
+Feature: HTML Email Generation
   Clients of the TSBC NC APIs want to be able to generate HTML email documents
-  using the Email Sending Service (ESS).
+  using the Document Generator Service (DGS).
 
-  @template.template_key.<template_key> @production
+  @generate-ar-op-cons-emails @template.template_key.<template_key> @production
   Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
@@ -36,3 +35,17 @@ Feature: AR OP Consolidated HTML Email Generation
     | ar_op_demand_consolidated_email            | text/html   | ar-op-demand-consolidated.json            |
     | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
+
+  @generate-ar-gen-cons-emails @template.template_key.<template_key> @production
+  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) general invoice notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+    Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
+    When a document of type <output_type> is generated from template <template_key> using data context <context_path>
+    Then the generated document is stored in the MDS
+    And the generated document is rendered correctly
+
+    Examples: templates and contexts
+    | template_key                               | output_type | context_path                              |
+    | ar_gen_past_due_consolidated_email         | text/html   | ar-gen-past-due-consolidated.json         |
+    | ar_gen_demand_consolidated_email           | text/html   | ar-gen-demand-consolidated.json           |
+    | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
+    | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
