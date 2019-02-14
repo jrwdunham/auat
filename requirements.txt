@@ -1,5 +1,5 @@
 behave>=1.0
-git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@2a3c04e
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@DG-3-grouping-permit-templates-update
 htmlmin
 requests<3.0
 tox
