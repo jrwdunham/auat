@@ -1,4 +1,4 @@
-"""Steps for the "Generate Email Documents" feature."""
+"""Steps for features involviing document generation."""
 
 from collections import namedtuple
 import logging
@@ -8,9 +8,23 @@ import pprint
 from behave import when, then, given, use_step_matcher
 
 from features.steps import utils
+from features.steps.expected_pdf_phrases import (
+    PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
+    PHRASES_AR_OP_PAST_DUE_CONSOLIDATED_LETTER,
+    PHRASES_AR_OP_DEMAND_CONSOLIDATED_LETTER,
+    PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER,
+    PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER,
+    PHRASES_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER,
+    PHRASES_AR_GEN_DEMAND_CONSOLIDATED_LETTER,
+    PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER,
+    PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER,
+    PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
+    PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER,
+    PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER,
+)
 
 
-logger = logging.getLogger('tsbc-nc-auat.generate-email-documents-steps')
+logger = logging.getLogger('tsbc-nc-auat.generate-documents-steps')
 
 
 # Givens
@@ -44,11 +58,15 @@ def step_impl(context, output_type, template_key, context_path):
 
 @then('the generated document is stored in the MDS')
 def step_impl(context):
+    doc_processor = {
+        'application/pdf': lambda d: d,
+        'text/html': context.tsbc_nc_user.dgs.minify_html,}.get(
+            context.scenario.generated_document_params['output_type'])
     context.scenario.downloaded_doc_path = (
         context.tsbc_nc_user.dgs.download_mds_doc_and_write_to_disk(
             context.scenario.generate_document_response['url'],
             context.scenario.generate_document_response['file_name'],
-            doc_processor=context.tsbc_nc_user.dgs.minify_html))
+            doc_processor=doc_processor))
     assert os.path.isfile(context.scenario.downloaded_doc_path), (
         f'Failed to download generated document'
         f' {context.scenario.generate_document_response["file_name"]}'
@@ -69,12 +87,15 @@ def step_impl(context):
         otype=context.scenario.generated_document_params['output_type'],)
     validate_document_generation(
         recipe,
-        context.scenario.downloaded_doc_path)
+        context.scenario.downloaded_doc_path,
+        context.tsbc_nc_user.dgs)
 
 
 # Utils
 # ------------------------------------------------------------------------------
 
+# A "recipe" deterministically defines how to generate a document of type otype
+# from template using context.
 Recipe = namedtuple('Recipe', 'template, context, otype')
 
 
@@ -87,12 +108,23 @@ ACCOUNT_NUMBER_RIGHT_ALIGNED_TD = (
     ' right; padding: 0.25em 0.25em;"><strong>Account Number:</strong></td>')
 
 
+# Validator Creators
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+# These are functions that return validator functions for a generated document.
+# A validator takes two arguments, the first being the document to
+# validate---either as a string of text (for HTML) or a file handle (for
+# PDF)---, the second being the DGS ability instance. If the function returns a
+# truthy value, it should be an error message. Implicitly returning ``None`` is
+# the success case.
+
+
 def confirm_total_amount_due_is(total_amount_due):
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if (('>Total amount due for all invoices</td>' not in document_str) or
                 (f'>{total_amount_due}</td>' not in document_str)):
             return (f'Failed to find total amount due {total_amount_due} in the'
-                    ' document.')
+                    f' document.\n\n{document_str}')
     return f
 
 
@@ -100,8 +132,7 @@ def confirm_notice_title_is(title_text):
     """Note we allow centered titles with an increased font size and those
     without. This should probably be standardized.
     """
-
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if  ((f'<div style="text-align: center"> <span style="font-size:'
               f' 16px;"><strong> {title_text} </strong></span> <br> </div>'
               not in document_str) and
@@ -113,7 +144,7 @@ def confirm_notice_title_is(title_text):
 
 
 def confirm_banner_text_is(banner_text):
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if (f'<h3 style="font-size: 18px !important; line-height: 23px'
             f' !important; font-weight: bold !important; margin: 15px 0px'
             f' 10px; color: #FFFFFF; font-family: Arial,'
@@ -124,18 +155,18 @@ def confirm_banner_text_is(banner_text):
 
 
 def fee_descr_col_is_present():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if FEE_DESCRIPTION_TH not in document_str:
             return f'Failed to locate a "fee description" table column'
     return f
 
 
 def fee_descr_col_is_NOT_present():
-    return lambda ds: not fee_descr_col_is_present()(ds)
+    return lambda ds, da: not fee_descr_col_is_present()(ds, da)
 
 
 def account_number_invisi_table_is_twice_present():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         prsnc_cnt = document_str.count(ACCOUNT_NUMBER_RIGHT_ALIGNED_TD)
         if prsnc_cnt != 2:
             return (f'The right-aligned borderless "account number" table was'
@@ -145,7 +176,7 @@ def account_number_invisi_table_is_twice_present():
 
 
 def collection_action_stmnt_removed():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if ('Failure to forward payment by the expiry date may result in'
             ' collection action') in document_str:
             return (f'The collection action statement was not removed. It'
@@ -154,7 +185,7 @@ def collection_action_stmnt_removed():
 
 
 def ssgr_s18_italicized_present():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if (f'<i>Safety Standards General Regulations (SSGR) s. 18</i>'
                 ) not in document_str:
             return 'The italicized SSGR s. 18 was not cited.'
@@ -162,7 +193,7 @@ def ssgr_s18_italicized_present():
 
 
 def collection_mention_removed():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if (('to avoid collection and enforcement actions' in document_str) or
                 ('to avoid enforcement actions' not in document_str)):
             return 'The "collection actions" mention was not removed.'
@@ -170,7 +201,7 @@ def collection_mention_removed():
 
 
 def invoice_changed_to_notice():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if ('If you have questions about this notice or your permit(s)'
                 ) not in document_str:
             return 'The "this invoice" should have been changed to "this notice".'
@@ -178,11 +209,35 @@ def invoice_changed_to_notice():
 
 
 def phone_number_for_payment_added():
-    def f(document_str):
+    def f(document_str, dgs_ability):
         if ('to renew your operating permit or by calling 1 866 566 7233'
                 ) not in document_str:
             return ('TSBC\'s phone number was not provided as a payment'
                     ' strategy.')
+    return f
+
+
+
+def phrases_in_pdf(expected_phrases):
+    def f(document_bytes, dgs_ability):
+        actual_phrases = dgs_ability.pdf2phrases(document_bytes)
+        if actual_phrases != expected_phrases:
+            missing_phrases = actual_phrases - expected_phrases
+            unexpected_phrases = expected_phrases - actual_phrases
+            ret = [f'The expected phrases do not match those extracted from'
+                   f' the generated PDF file.']
+            if missing_phrases:
+                ret.append(
+                    f'There is/are {len(missing_phrases)} MISSING PHRASES;'
+                    f' here is one: "{list(missing_phrases)[0]}".')
+            if unexpected_phrases:
+                ret.append(
+                    f'There is/are {len(unexpected_phrases)} UNEXPECTED'
+                    f' PHRASES; here is one: "{list(unexpected_phrases)[0]}".')
+
+            pprint.pprint(actual_phrases)
+
+            return ' '.join(ret)
     return f
 
 
@@ -339,10 +394,118 @@ VALIDATORS_BY_RECIPE = {
 
     # TNC CONSOLIDATED NOTICES - END
 
+    # AR OP CONSOLIDATED LETTER NOTICES - START
+
+    Recipe(
+        template='ar_op_friendly_reminder_consolidated_letter',
+        context='ar-op-friendly-reminder-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_op_past_due_consolidated_letter',
+        context='ar-op-past-due-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_OP_PAST_DUE_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_op_demand_consolidated_letter',
+        context='ar-op-demand-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_OP_DEMAND_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_op_final_warning_consolidated_letter',
+        context='ar-op-final-warning-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_op_final_notice_consolidated_letter',
+        context='ar-op-final-notice-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER),
+    ),
+
+    # AR OP CONSOLIDATED LETTER NOTICES - END
+
+    # AR GEN CONSOLIDATED LETTER NOTICES - START
+
+    Recipe(
+        template='ar_gen_past_due_consolidated_letter',
+        context='ar-gen-past-due-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_gen_demand_consolidated_letter',
+        context='ar-gen-demand-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_GEN_DEMAND_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_gen_final_warning_consolidated_letter',
+        context='ar-gen-final-warning-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='ar_gen_final_notice_consolidated_letter',
+        context='ar-gen-final-notice-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER),
+    ),
+
+    # AR GEN CONSOLIDATED LETTER NOTICES - END
+
+    # TNC CONSOLIDATED LETTER NOTICES - START
+
+    Recipe(
+        template='inspection_nc_friendly_reminder_consolidated_letter',
+        context='inspection-nc-friendly-reminder-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='inspection_nc_past_due_consolidated_letter',
+        context='inspection-nc-past-due-consolidated.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER),
+    ),
+
+    Recipe(
+        template='inspection_nc_final_warning_consolidated_letter',
+        context='inspection-nc-final-warning-consolidated-multiple-permits.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER),
+    ),
+
+    # TNC CONSOLIDATED LETTER NOTICES - END
+
 }
 
 
-def validate_document_generation(recipe, generated_doc_path):
+def validate_document_generation(recipe, generated_doc_path, dgs_ability):
     """Validate the document generated using the DGS and 3-tuple
     ``recipe`` and downloaded to ``generated_doc_path``.
     """
@@ -354,10 +517,14 @@ def validate_document_generation(recipe, generated_doc_path):
             f' {generated_doc_path}.'
             f' The recipe {pprint.pformat(recipe)}'
             f' corresponds to no validators.')
-    with open(generated_doc_path) as fh:
-        haystack = fh.read()  # TODO: common interface for bytes and text data.
+    _, ext = os.path.splitext(generated_doc_path)
+    kwargs = {'.pdf': {'mode': 'rb'}}.get(ext, {})
+    with open(generated_doc_path, **kwargs) as fh:
+        haystack = fh
+        if not kwargs:
+            haystack = fh.read()
         for validator in validators:
-            error = validator(haystack)
+            error = validator(haystack, dgs_ability)
             if error:
                 raise AssertionError(
                     f'Contrary to expectation, "{error}". Error generated when'

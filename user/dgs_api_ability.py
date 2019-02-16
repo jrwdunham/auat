@@ -10,6 +10,7 @@ import time
 
 import htmlmin
 import requests
+import slate3k as slate
 import templateapi.scripts.client as dgs_client
 from templateapi.templates import TEMPLATES
 from templateapi.tests.utils import TEST_CONTEXT_PATHS
@@ -21,7 +22,10 @@ from templateapi.utils import (
 from . import base
 
 
+
 logger = logging.getLogger('tsbcncuser.api')
+
+
 
 
 class DGSAPIAbilityError(base.TSBCNCUserError):
@@ -120,3 +124,19 @@ class DGSAPIAbility(base.Base):
 
     def get_write_path_for_fname(self, doc_file_name):
         return os.path.join(self.tmp_path, doc_file_name)
+
+    @staticmethod
+    def pdf2text(pdf_path):
+        if isinstance(pdf_path, (str, bytes)):
+            with open(pdf_path, 'rb') as fh:
+                return slate.PDF(fh)
+        return slate.PDF(pdf_path)
+
+    def pdf2phrases(self, pdf_path):
+        """Return a list of the textual "phrases" in the PDF at ``pdf_path``.
+        These are snippets of contiguous text, as returned by slate (slate3k),
+        with whitespace removed.
+        """
+        return set(filter(
+            None, [phrase.strip() for phrase in
+                   self.pdf2text(pdf_path)[0].splitlines()]))

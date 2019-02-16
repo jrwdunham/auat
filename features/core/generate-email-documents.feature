@@ -1,4 +1,4 @@
-# HTML Email Geneartion Feature
+# HTML Email Generation Feature
 #
 # To run this feature file against a Docker-compose deploy of TSBC NC DGS::
 #
@@ -19,6 +19,7 @@
 #           --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
 #           ...
 
+@email-gen
 Feature: HTML Email Generation
   Clients of the TSBC NC APIs want to be able to generate HTML email documents
   using the Document Generator Service (DGS).
