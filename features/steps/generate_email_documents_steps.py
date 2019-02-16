@@ -97,12 +97,29 @@ def confirm_total_amount_due_is(total_amount_due):
 
 
 def confirm_notice_title_is(title_text):
+    """Note we allow centered titles with an increased font size and those
+    without. This should probably be standardized.
+    """
+
     def f(document_str):
-        if  (f'<div style="text-align: center"> <span style="font-size:'
-             f' 16px;"><strong> {title_text} </strong></span> <br> </div>'
-             ) not in document_str:
+        if  ((f'<div style="text-align: center"> <span style="font-size:'
+              f' 16px;"><strong> {title_text} </strong></span> <br> </div>'
+              not in document_str) and
+             (f'<div style="text-align: center"> <strong>{title_text}</strong>'
+              f' </div>') not in document_str):
             return (f'Failed to find expected text "{title_text}" in the'
                     f' document.')
+    return f
+
+
+def confirm_banner_text_is(banner_text):
+    def f(document_str):
+        if (f'<h3 style="font-size: 18px !important; line-height: 23px'
+            f' !important; font-weight: bold !important; margin: 15px 0px'
+            f' 10px; color: #FFFFFF; font-family: Arial,'
+            f' sans-serif;">{banner_text}</h3></div>') not in document_str:
+            return (f'Failed to find expected text "{banner_text}" in the'
+                    f' blue banner at the top of the email.')
     return f
 
 
@@ -174,7 +191,7 @@ def phone_number_for_payment_added():
 # document as their sole argument.
 VALIDATORS_BY_RECIPE = {
 
-    # AR OP NOTICES - START
+    # AR OP CONSOLIDATED NOTICES - START
 
     Recipe(  # for Friendly Reminder
         template='ar_op_friendly_reminder_consolidated_email',
@@ -238,9 +255,9 @@ VALIDATORS_BY_RECIPE = {
         account_number_invisi_table_is_twice_present(),
     ),
 
-    # AR OP NOTICES - END
+    # AR OP CONSOLIDATED NOTICES - END
 
-    # AR GENERAL NOTICES - START
+    # AR GENERAL CONSOLIDATED NOTICES - START
 
     Recipe(  # for Past Due
         template='ar_gen_past_due_consolidated_email',
@@ -286,7 +303,41 @@ VALIDATORS_BY_RECIPE = {
         account_number_invisi_table_is_twice_present(),
     ),
 
-    # AR GENERAL NOTICES - END
+    # AR GENERAL CONSOLIDATED NOTICES - END
+
+    # TNC CONSOLIDATED NOTICES - START
+
+    Recipe(  # for Friendly Reminder
+        template='inspection_nc_friendly_reminder_consolidated_email',
+        context='inspection-nc-friendly-reminder-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_notice_title_is('Inspection Non-compliances Friendly Reminder Notice'),
+        confirm_banner_text_is('Inspection Non-compliances Friendly Reminder Notice'),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    Recipe(  # for Past Due
+        template='inspection_nc_past_due_consolidated_email',
+        context='inspection-nc-past-due-consolidated.json',
+        otype='text/html',):
+    (
+        confirm_notice_title_is('Inspection Non-compliances Past Due Notice'),
+        confirm_banner_text_is('Inspection Non-compliances Past Due Notice'),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    Recipe(  # for Final Warning
+        template='inspection_nc_final_warning_consolidated_email',
+        context='inspection-nc-final-warning-consolidated-multiple-permits.json',
+        otype='text/html',):
+    (
+        confirm_notice_title_is('Inspection Non-compliances Final Warning Notice'),
+        confirm_banner_text_is('Inspection Non-compliances Final Warning Notice'),
+        account_number_invisi_table_is_twice_present(),
+    ),
+
+    # TNC CONSOLIDATED NOTICES - END
 
 }
 

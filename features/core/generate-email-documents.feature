@@ -1,3 +1,5 @@
+# HTML Email Geneartion Feature
+#
 # To run this feature file against a Docker-compose deploy of TSBC NC DGS::
 #
 #     $ behave \
@@ -37,7 +39,7 @@ Feature: HTML Email Generation
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
 
   @generate-ar-gen-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) general invoice notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  Scenario Outline: Ireen wants to generate the Accounts Receivable (AR) general invoice notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     Then the generated document is stored in the MDS
@@ -49,3 +51,16 @@ Feature: HTML Email Generation
     | ar_gen_demand_consolidated_email           | text/html   | ar-gen-demand-consolidated.json           |
     | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
     | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
+
+  @generate-tnc-cons-emails @template.template_key.<template_key> @production
+  Scenario Outline: Thor wants to generate consolidated TNC notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+    Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
+    When a document of type <output_type> is generated from template <template_key> using data context <context_path>
+    Then the generated document is stored in the MDS
+    And the generated document is rendered correctly
+
+    Examples: templates and contexts
+    | template_key                                       | output_type | context_path                                                       |
+    | inspection_nc_friendly_reminder_consolidated_email | text/html   | inspection-nc-friendly-reminder-consolidated.json                  |
+    | inspection_nc_past_due_consolidated_email          | text/html   | inspection-nc-past-due-consolidated.json                           |
+    | inspection_nc_final_warning_consolidated_email     | text/html   | inspection-nc-final-warning-consolidated-multiple-permits.json     |
