@@ -221,23 +221,12 @@ def phone_number_for_payment_added():
 def phrases_in_pdf(expected_phrases):
     def f(document_bytes, dgs_ability):
         actual_phrases = dgs_ability.pdf2phrases(document_bytes)
-        if actual_phrases != expected_phrases:
-            missing_phrases = actual_phrases - expected_phrases
-            unexpected_phrases = expected_phrases - actual_phrases
-            ret = [f'The expected phrases do not match those extracted from'
-                   f' the generated PDF file.']
-            if missing_phrases:
-                ret.append(
-                    f'There is/are {len(missing_phrases)} MISSING PHRASES;'
-                    f' here is one: "{list(missing_phrases)[0]}".')
-            if unexpected_phrases:
-                ret.append(
-                    f'There is/are {len(unexpected_phrases)} UNEXPECTED'
-                    f' PHRASES; here is one: "{list(unexpected_phrases)[0]}".')
-
-            pprint.pprint(actual_phrases)
-
-            return ' '.join(ret)
+        missing_phrases = expected_phrases - actual_phrases
+        if missing_phrases:
+            return (f'The expected phrases are not all present in those extracted from'
+                    f' the generated PDF file. There is/are'
+                    f' {len(missing_phrases)} MISSING PHRASES; here is one:'
+                    f' "{list(missing_phrases)[0]}".')
     return f
 
 

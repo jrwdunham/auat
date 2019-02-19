@@ -30,7 +30,6 @@ PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER = {
     'Electrical operating permit(s).',
     'Energy Utility',
     'FRM-1623',
-    'February 16, 2019',
     'Fee Description',
     'Friendly Reminder Date:',
     'Friendly Reminder Operating Permit Renewal',
@@ -93,7 +92,6 @@ PHRASES_AR_OP_PAST_DUE_CONSOLIDATED_LETTER = {
     'Operating permits will be issued upon receipt of payment and signed FSR '
     'Verification form for',
     'Page 1 of 2',
-    'Past Due Date: February 16, 2019',
     'Past Due Operating Permit Renewal Notice',
     'Payments/Adjustment',
     'Site: 17e 34 Surrey BC; Work Class:',
@@ -128,7 +126,6 @@ PHRASES_AR_OP_DEMAND_CONSOLIDATED_LETTER = {
     'Account Number: 123456',
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
-    'Demand Date: February 16, 2019',
     'Demand Operating Permit Renewal Notice',
     'FRM-1625',
     'Further to our Past Due Notice, our records still indicate that your '
@@ -174,7 +171,6 @@ PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
     'FRM-1626',
-    'February 16, 2019',
     'Final Warning Date:',
     'Final Warning Operating Permit Renewal Notice',
     'Further to the Demand Notice you have received from us, your operating '
@@ -231,7 +227,6 @@ PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER = {
     'name, we remain committed to our vision of Safe Technical',
     'Electrical operating permit(s).',
     'FRM-1627',
-    'February 16, 2019',
     'Final Notice Date:',
     'Final Notice Operating Permit Renewal',
     'Operating permits will be issued upon receipt of payment and signed FSR '
@@ -296,7 +291,6 @@ PHRASES_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER = {
     'Our records indicate that you have failed to make payments for the invoices '
     'listed below. Your invoices are now',
     'Page 1 of 1',
-    'Past Due Date: February 16, 2019',
     'Past Due Invoice Number',
     'Past Due Summary Notice',
     'Payments/Adjustment Credits',
@@ -333,7 +327,6 @@ PHRASES_AR_GEN_DEMAND_CONSOLIDATED_LETTER = {
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
     'BC.',
-    'Demand Date: February 16, 2019',
     'Demand Summary Notice',
     'FRM-1629',
     'Further to our Past Due Summary notice, our records still indicate that you '
@@ -382,7 +375,6 @@ PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'name, we remain committed to our vision of Safe Technical',
     'BC.',
     'FRM-1630',
-    'February 16, 2019',
     'Final Warning Date:',
     'Final Warning Summary Notice',
     'Further to our Demand Summary notice, our records still indicate that you '
@@ -444,7 +436,6 @@ PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER = {
     'permit(s), call our contact center at 1',
     'Due Date',
     'FRM-1631',
-    'February 16, 2019',
     'Final Notice Date:',
     'Final Notice Summary',
     'For fast, easy payment, use our online services! Login with your online '
@@ -491,7 +482,6 @@ PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER = {
     'Account Number: 1122334455',
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
-    'Date: February 16, 2019',
     'Dear John Smith,',
     'FRM-1632',
     'Further to our certificate of inspection(s) issued regarding the '
@@ -534,7 +524,6 @@ PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER = {
     'Account Number: 1122334455',
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
-    'Date: February 16, 2019',
     'Dear John Smith,',
     'FRM-1633',
     'Further to our Certificate of Inspection regarding the assessment performed '
@@ -580,7 +569,6 @@ PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'Account Number: 1122334455',
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
-    'Date: February 16, 2019',
     'Dear John Smith,',
     'FRM-1635',
     'Further to our INSPECTION NON-COMPLIANCES PAST DUE NOTICE regarding the '
