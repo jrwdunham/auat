@@ -1,4 +1,4 @@
-"""Steps for features involviing document generation."""
+"""Steps for features involving document generation."""
 
 from collections import namedtuple
 import logging
@@ -60,7 +60,7 @@ def step_impl(context, output_type, template_key, context_path):
 def step_impl(context):
     doc_processor = {
         'application/pdf': lambda d: d,
-        'text/html': context.tsbc_nc_user.dgs.minify_html,}.get(
+        'text/html': context.tsbc_nc_user.dgs.minify_html_file,}.get(
             context.scenario.generated_document_params['output_type'])
     context.scenario.downloaded_doc_path = (
         context.tsbc_nc_user.dgs.download_mds_doc_and_write_to_disk(

@@ -15,6 +15,8 @@ DGS_URL = "http://127.0.0.1:61780/micros/dgs/v1/api/"
 DGS_ACCESS_TOKEN = "nope"
 ESS_URL = "http://127.0.0.1:61780/micros/ess/v1/api/"
 ESS_ACCESS_TOKEN = "nope"
+DES_URL = "http://127.0.0.1:61780/micros/des/v1/api/"
+DES_ACCESS_TOKEN = "nope"
 
 DRIVER_NAME = 'Chrome'
 
@@ -53,6 +55,12 @@ def get_tsbc_nc_user(userdata):
         'dgs_access_token': userdata.get('dgs_access_token', DGS_ACCESS_TOKEN),
         'ess_url': userdata.get('ess_url', ESS_URL),
         'ess_access_token': userdata.get('ess_access_token', ESS_ACCESS_TOKEN),
+        'des_url': userdata.get('des_url', DES_URL),
+        'des_access_token': userdata.get('des_access_token', DES_ACCESS_TOKEN),
+        'tester_email': userdata.get('tester_email', None),
+        'tester_email_password': userdata.get(
+            'tester_email_password',
+            os.environ.get('TSBC_NC_AUAT_TESTER_EMAIL_PASSWORD')),
         'clean_up': str2bool(userdata.get('clean_up', 'true')),
         'driver_name': userdata.get('driver_name', DRIVER_NAME),
         'ssh_accessible': bool(

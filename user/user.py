@@ -11,6 +11,8 @@ import shlex
 import subprocess
 
 from . import dgs_api_ability
+from . import ess_api_ability
+from . import gmail_client_ability
 from . import base
 from . import constants as c
 
@@ -34,3 +36,5 @@ class TSBCNCUser(base.Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.dgs = dgs_api_ability.DGSAPIAbility(**kwargs)
+        self.ess = ess_api_ability.ESSAPIAbility(**kwargs)
+        self.gmail = gmail_client_ability.GMailClientAbility(**kwargs)

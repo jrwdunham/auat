@@ -1,7 +1,7 @@
 """DGS API Ability.
 
 This module contains the ``DGSAPIAbility`` class, which represents a
-user's ability to use TSBC NC's APIs to interact with TSBC NC.
+user's ability to use the Document Generator Service's APIs.
 """
 
 import logging
@@ -22,10 +22,7 @@ from templateapi.utils import (
 from . import base
 
 
-
-logger = logging.getLogger('tsbcncuser.api')
-
-
+logger = logging.getLogger('tsbc-nc-user.dgs-api')
 
 
 class DGSAPIAbilityError(base.TSBCNCUserError):
@@ -106,12 +103,16 @@ class DGSAPIAbility(base.Base):
         return dgs_client.issue_generate_and_store_request(config, context_str)
 
     @staticmethod
-    def minify_html(html_path):
+    def minify_html(html_str):
         """Rewrite the HTML document at ``html_path`` after minifying it."""
-        with open(html_path) as fh:
-            new = htmlmin.minify(fh.read())
-        with open(html_path, 'w') as fh:
-            fh.write(new)
+        return htmlmin.minify(html_str)
+
+    def minify_html_file(self, html_path):
+        """Rewrite the HTML document at ``html_path`` after minifying it."""
+        with open(html_path) as fhi:
+            html = fhi.read()
+        with open(html_path, 'w') as fho:
+            fho.write(self.minify_html(html))
 
     def download_mds_doc_and_write_to_disk(self, doc_url, doc_file_name,
                                            doc_processor=None):

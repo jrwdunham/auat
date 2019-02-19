@@ -1,30 +1,38 @@
-# HTML Email Generation Feature
+# Send Emails Feature
 #
 # To run this feature file, supply the tag for this feature and the URL and
-# access token for a running Document Generator Service instance::
+# access token for running Email Sending Service (ESS) and Document Generator
+# Service (DGS) instances::
 #
 #     $ behave \
-#           --tags=email-gen \
+#           --tags=email-send \
+#           -D ess_url=http://127.0.0.1:61780/micros/ess/v1/api/ \
+#           -D ess_access_token=<ESS_TOKEN> \
 #           -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
-#           -D dgs_access_token=<DGS_TOKEN> \
+#           -D dgs_access_token=<DGS_TOKEN>
 #
-# To target a specific template, e.g., the
+# To target the template of a specific email to send, e.g., the
 # ar_op_friendly_reminder_consolidated_email template row of the "templates and
 # contexts" table), add the following tag::
 #
 #           --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
 
-@email-gen
-Feature: HTML Email Generation
-  Clients of the TSBC NC APIs want to be able to generate HTML email documents
+@email-send
+Feature: Email Sending
+  Clients of the TSBC NC APIs want to be able to send emails using the
+  Email Sending Service (ESS). The emails being sent are HTML documents created
   using the Document Generator Service (DGS).
 
-  @generate-ar-op-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @send-ar-op-cons-emails @template.template_key.<template_key> @production
+  Scenario Outline: Dan wants to send sample Accounts Receivable (AR) Operating Permit (OP) renewal emails to an email address that he can access so that he can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
+    And a request is made to create an email and send it to the tester using the ESS and the generated document
     Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And an email referencing the document is created in the ESS
+    And the email has status sent
+    And the email is delivered to the tester
+    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -34,12 +42,15 @@ Feature: HTML Email Generation
     | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
 
-  @generate-ar-gen-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Ireen wants to generate the Accounts Receivable (AR) general invoice notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @send-ar-gen-cons-emails @template.template_key.<template_key> @production
+  Scenario Outline: Ireen wants to send sample Accounts Receivable (AR) general invoice notice emails to an email address that she can access so that she can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And a request is made to create an email and send it to the tester using the ESS and the generated document
+    Then an email referencing the document is created in the ESS
+    And the email has status sent
+    And the email is delivered to the tester
+    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -48,12 +59,15 @@ Feature: HTML Email Generation
     | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
     | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
 
-  @generate-tnc-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Thor wants to generate consolidated TNC notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @send-tnc-cons-emails @template.template_key.<template_key> @production
+  Scenario Outline: Thor wants to send sample consolidated TNC notice HTML emails to an email address that he can access so that he can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And a request is made to create an email and send it to the tester using the ESS and the generated document
+    Then an email referencing the document is created in the ESS
+    And the email has status sent
+    And the email is delivered to the tester
+    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                                       | output_type | context_path                                                       |

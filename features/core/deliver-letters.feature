@@ -1,30 +1,34 @@
-# HTML Email Generation Feature
+# PDF Letter Delivery
 #
 # To run this feature file, supply the tag for this feature and the URL and
-# access token for a running Document Generator Service instance::
+# access token for running Delivery Service (DES) and Document Generator
+# Service (DGS) instances::
 #
 #     $ behave \
-#           --tags=email-gen \
+#           --tags=letter-deliver \
+#           -D des_url=http://127.0.0.1:61780/micros/des/v1/api/ \
+#           -D des_access_token=<DES_TOKEN> \
 #           -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
-#           -D dgs_access_token=<DGS_TOKEN> \
+#           -D dgs_access_token=<DGS_TOKEN>
 #
-# To target a specific template, e.g., the
+# To target the template of a specific letter to deliver, e.g., the
 # ar_op_friendly_reminder_consolidated_email template row of the "templates and
 # contexts" table), add the following tag::
 #
 #           --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
 
-@email-gen
-Feature: HTML Email Generation
-  Clients of the TSBC NC APIs want to be able to generate HTML email documents
-  using the Document Generator Service (DGS).
+@letter-deliver
+Feature: PDF Letter Delivery
+  Clients of the TSBC NC APIs want to be able to generate PDF letters and
+  deliver them to recipients using the Delivery Service (DES).
 
-  @generate-ar-op-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @deliver-ar-op-cons-letters @template.template_key.<template_key> @production
+  Scenario Outline: Dan wants to deliver sample Accounts Receivable (AR) Operating Permit (OP) renewal letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And a request is made to create a letter that references the document in the DES
+    Then a letter referencing the document is created in the ESS
+    And the letter has status "not delivered"
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -34,12 +38,13 @@ Feature: HTML Email Generation
     | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
 
-  @generate-ar-gen-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Ireen wants to generate the Accounts Receivable (AR) general invoice notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @deliver-ar-gen-cons-letters @template.template_key.<template_key> @production
+  Scenario Outline: Ireen wants to deliver sample Accounts Receivable (AR) general invoice notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And a request is made to create a letter that references the document in the DES
+    Then a letter referencing the document is created in the ESS
+    And the letter has status "not delivered"
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -48,12 +53,13 @@ Feature: HTML Email Generation
     | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
     | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
 
-  @generate-tnc-cons-emails @template.template_key.<template_key> @production
-  Scenario Outline: Thor wants to generate consolidated TNC notice HTML email documents using the DGS and confirm that the generated documents have the expected properties.
+  @deliver-tnc-cons-letters @template.template_key.<template_key> @production
+  Scenario Outline: Thor wants to deliver sample TNC notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    Then the generated document is stored in the MDS
-    And the generated document is rendered correctly
+    And a request is made to create a letter that references the document in the DES
+    Then a letter referencing the document is created in the ESS
+    And the letter has status "not delivered"
 
     Examples: templates and contexts
     | template_key                                       | output_type | context_path                                                       |

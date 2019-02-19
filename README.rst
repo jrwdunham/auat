@@ -111,13 +111,26 @@ the following link:
 Usage
 ================================================================================
 
-Simply executing the ``behave`` command will run all of the tests and will use
-the default URLs and access tokens defined in
-``features/environment.py``. However, in the typical case you will need to
-provide Behave with some configuration details that are appropriate to your
-environment and which target a specific subset of tests (i.e., feature files or
-scenarios).  The following command is a more realistic example of running the
-TSBC-NC-AUAT::
+To run all of the tests, call ``behave`` and pass in the URLs and access tokens
+of the relevant TSBC APIs::
+
+   $ behave \
+         -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
+         -D dgs_access_token=<DGS_TOKEN> \
+         -D ess_url=http://127.0.0.1:61780/micros/ess/v1/api/ \
+         -D ess_access_token=<ESS_TOKEN> \
+         -D tester_email=<GMAIL_EMAIL_ADDRESS_OF_TESTER>
+
+.. warning:: The above assumes that the tester is using a GMail account to
+             perform the ESS-related tests and has a GMail credentials JSON
+             file at secrets/gmail-credentials.json. See
+             https://developers.google.com/gmail/api/quickstart/python.
+
+To avoid running *all* of the tests, as in the above example, more typical usage
+involves providing Behave with configuration details that target a specific
+subset of the features or scenarios. The following example command shows how to
+run a single feature scenario, the one that tests document generation for
+consolidated AR Operating Permit (OP) renewal notice emails::
 
     $ behave \
         --tags=generate-ar-op-cons-emails \
@@ -165,6 +178,17 @@ scenario of the *AR OP Consolidated HTML Email Generation* feature::
 In addition to the general guidance just provided, all of the feature files in
 the ``features/`` directory should contain comments clearly indicating how they
 should be executed and whether they need any special configuration (flags).
+
+
+Issue --- Email Delivery Verification
+--------------------------------------------------------------------------------
+
+At present, email delivery verification can only happen when the tester
+supplies a GMail account as the value of the ``tester_email`` Behave userdata
+flag. The tests need to also allow for Outlook tester emails and therefore need
+an Outlook client ability. See
+https://docs.microsoft.com/en-us/outlook/rest/python-tutorial for next steps on
+that branch of development.
 
 
 Logging
