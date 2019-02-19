@@ -33,9 +33,9 @@ logger = logging.getLogger('tsbc-nc-auat.generate-documents-steps')
 @given('a DGS instance containing an up-to-date template {template_key},'
        ' including its template dependencies')
 def step_impl(context, template_key):
-    template = context.tsbc_nc_user.dgs.get_template_from_key(template_key)
-    dependencies = context.tsbc_nc_user.dgs.get_template_dependencies(template)
-    context.tsbc_nc_user.dgs.upsert_templates([template] + dependencies)
+    template = context.user.dgs.get_template_from_key(template_key)
+    dependencies = context.user.dgs.get_template_dependencies(template)
+    context.user.dgs.upsert_templates([template] + dependencies)
 
 
 # Whens
@@ -49,7 +49,7 @@ def step_impl(context, output_type, template_key, context_path):
         'template_key': template_key,
         'context_path': context_path,}
     context.scenario.generate_document_response = (
-        context.tsbc_nc_user.dgs.generate_document(
+        context.user.dgs.generate_document(
             template_key, context_path, output_type=output_type))
 
 
@@ -60,10 +60,10 @@ def step_impl(context, output_type, template_key, context_path):
 def step_impl(context):
     doc_processor = {
         'application/pdf': lambda d: d,
-        'text/html': context.tsbc_nc_user.dgs.minify_html_file,}.get(
+        'text/html': context.user.dgs.minify_html_file,}.get(
             context.scenario.generated_document_params['output_type'])
     context.scenario.downloaded_doc_path = (
-        context.tsbc_nc_user.dgs.download_mds_doc_and_write_to_disk(
+        context.user.dgs.download_mds_doc_and_write_to_disk(
             context.scenario.generate_document_response['url'],
             context.scenario.generate_document_response['file_name'],
             doc_processor=doc_processor))
@@ -88,7 +88,7 @@ def step_impl(context):
     validate_document_generation(
         recipe,
         context.scenario.downloaded_doc_path,
-        context.tsbc_nc_user.dgs)
+        context.user.dgs)
 
 
 # Utils

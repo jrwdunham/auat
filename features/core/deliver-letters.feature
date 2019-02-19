@@ -12,12 +12,12 @@
 #           -D dgs_access_token=<DGS_TOKEN>
 #
 # To target the template of a specific letter to deliver, e.g., the
-# ar_op_friendly_reminder_consolidated_email template row of the "templates and
+# ar_op_friendly_reminder_consolidated_letter template row of the "templates and
 # contexts" table), add the following tag::
 #
-#           --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
+#           --tags=template.template_key.ar_op_friendly_reminder_consolidated_letter \
 
-@letter-deliver
+@letter-delivery
 Feature: PDF Letter Delivery
   Clients of the TSBC NC APIs want to be able to generate PDF letters and
   deliver them to recipients using the Delivery Service (DES).
@@ -31,12 +31,12 @@ Feature: PDF Letter Delivery
     And the letter has status "not delivered"
 
     Examples: templates and contexts
-    | template_key                               | output_type | context_path                              |
-    | ar_op_friendly_reminder_consolidated_email | text/html   | ar-op-friendly-reminder-consolidated.json |
-    | ar_op_past_due_consolidated_email          | text/html   | ar-op-past-due-consolidated.json          |
-    | ar_op_demand_consolidated_email            | text/html   | ar-op-demand-consolidated.json            |
-    | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
-    | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
+    | template_key                                | output_type       | context_path                              |
+    | ar_op_friendly_reminder_consolidated_letter | application/pdf   | ar-op-friendly-reminder-consolidated.json |
+    | ar_op_past_due_consolidated_letter          | application/pdf   | ar-op-past-due-consolidated.json          |
+    | ar_op_demand_consolidated_letter            | application/pdf   | ar-op-demand-consolidated.json            |
+    | ar_op_final_warning_consolidated_letter     | application/pdf   | ar-op-final-warning-consolidated.json     |
+    | ar_op_final_notice_consolidated_letter      | application/pdf   | ar-op-final-notice-consolidated.json      |
 
   @deliver-ar-gen-cons-letters @template.template_key.<template_key> @production
   Scenario Outline: Ireen wants to deliver sample Accounts Receivable (AR) general invoice notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
@@ -47,11 +47,11 @@ Feature: PDF Letter Delivery
     And the letter has status "not delivered"
 
     Examples: templates and contexts
-    | template_key                               | output_type | context_path                              |
-    | ar_gen_past_due_consolidated_email         | text/html   | ar-gen-past-due-consolidated.json         |
-    | ar_gen_demand_consolidated_email           | text/html   | ar-gen-demand-consolidated.json           |
-    | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
-    | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
+    | template_key                                | output_type       | context_path                              |
+    | ar_gen_past_due_consolidated_letter         | application/pdf   | ar-gen-past-due-consolidated.json         |
+    | ar_gen_demand_consolidated_letter           | application/pdf   | ar-gen-demand-consolidated.json           |
+    | ar_gen_final_warning_consolidated_letter    | application/pdf   | ar-gen-final-warning-consolidated.json    |
+    | ar_gen_final_notice_consolidated_letter     | application/pdf   | ar-gen-final-notice-consolidated.json     |
 
   @deliver-tnc-cons-letters @template.template_key.<template_key> @production
   Scenario Outline: Thor wants to deliver sample TNC notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
@@ -62,7 +62,7 @@ Feature: PDF Letter Delivery
     And the letter has status "not delivered"
 
     Examples: templates and contexts
-    | template_key                                       | output_type | context_path                                                       |
-    | inspection_nc_friendly_reminder_consolidated_email | text/html   | inspection-nc-friendly-reminder-consolidated.json                  |
-    | inspection_nc_past_due_consolidated_email          | text/html   | inspection-nc-past-due-consolidated.json                           |
-    | inspection_nc_final_warning_consolidated_email     | text/html   | inspection-nc-final-warning-consolidated-multiple-permits.json     |
+    | template_key                                        | output_type       | context_path                                                       |
+    | inspection_nc_friendly_reminder_consolidated_letter | application/pdf   | inspection-nc-friendly-reminder-consolidated.json                  |
+    | inspection_nc_past_due_consolidated_letter          | application/pdf   | inspection-nc-past-due-consolidated.json                           |
+    | inspection_nc_final_warning_consolidated_letter     | application/pdf   | inspection-nc-final-warning-consolidated-multiple-permits.json     |

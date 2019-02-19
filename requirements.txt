@@ -1,6 +1,7 @@
 behave>=1.0
 git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@DG-3-grouping-permit-templates-update
 git+https://jdunham@bitbucket.safetyauthority.ca/scm/ess/email-sending-service-api.git@ESS-8-fix-pip-installability
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/des/delivery-service-api.git@DES-5-fix-pip-installability
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib

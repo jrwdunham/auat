@@ -119,6 +119,8 @@ of the relevant TSBC APIs::
          -D dgs_access_token=<DGS_TOKEN> \
          -D ess_url=http://127.0.0.1:61780/micros/ess/v1/api/ \
          -D ess_access_token=<ESS_TOKEN> \
+         -D des_url=http://127.0.0.1:61780/micros/des/v1/api/ \
+         -D des_access_token=<DES_TOKEN> \
          -D tester_email=<GMAIL_EMAIL_ADDRESS_OF_TESTER>
 
 .. warning:: The above assumes that the tester is using a GMail account to
@@ -189,6 +191,21 @@ flag. The tests need to also allow for Outlook tester emails and therefore need
 an Outlook client ability. See
 https://docs.microsoft.com/en-us/outlook/rest/python-tutorial for next steps on
 that branch of development.
+
+
+Letter Delivery (DGS + DES) Testing
+--------------------------------------------------------------------------------
+
+To test the Letter (Generation and) Delivery feature::
+
+  $ behave \
+        --tags=letter-delivery \
+        --tags=template.template_key.ar_op_friendly_reminder_consolidated_email \
+        -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
+        -D dgs_access_token=<DGS_TOKEN> \
+        -D ess_url=http://127.0.0.1:61780/micros/ess/v1/api/ \
+        -D ess_access_token=<ESS_TOKEN>
+        --no-skipped  -D clean_up=t
 
 
 Logging

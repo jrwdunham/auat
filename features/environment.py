@@ -100,10 +100,10 @@ def before_all(context):
 def before_scenario(context, scenario):
     """Instantiate an ``TSBCNCUser`` instance."""
     userdata = context.config.userdata
-    context.tsbc_nc_user = get_tsbc_nc_user(userdata)
+    context.user = get_tsbc_nc_user(userdata)
 
 
 def after_scenario(context, scenario):
     """Do some clean up after each scenario is run."""
-    if context.tsbc_nc_user.clean_up:
-        context.tsbc_nc_user.clear_tmp_dir()
+    if context.user.clean_up:
+        context.user.clear_tmp_dir()

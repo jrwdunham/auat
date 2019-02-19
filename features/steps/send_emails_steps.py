@@ -30,7 +30,7 @@ def step_impl(context):
     # via the email client's API in a later step.
     context.scenario.sent_email_subject = f'{key}-{str(uuid4())}'
     context.scenario.send_email_resp = (
-        context.tsbc_nc_user.ess.create_and_send_email(
+        context.user.ess.create_and_send_email(
             context.scenario.sent_email_subject,
             context.scenario.generate_document_response['url'],))
 
@@ -65,9 +65,9 @@ def step_impl(context):
         sleep *= 2
         try:
             from_email_client = (
-                context.tsbc_nc_user.gmail.get_html_message_matching_query(
+                context.user.gmail.get_html_message_matching_query(
                     query=f'subject:{context.scenario.sent_email_subject}'))
-        except context.tsbc_nc_user.gmail.GMailError:
+        except context.user.gmail.GMailError:
             pass
         except Exception as err:
             raise AssertionError(
@@ -79,7 +79,7 @@ def step_impl(context):
             f'Failed to retrieve the GMail message with subject'
             f' "{context.scenario.sent_email_subject}".')
     downloaded_doc_path = (
-        context.tsbc_nc_user.dgs.download_mds_doc_and_write_to_disk(
+        context.user.dgs.download_mds_doc_and_write_to_disk(
             context.scenario.generate_document_response['url'],
             f'not-minified-'  # NOTE: NOT MINIFIED
             f'{context.scenario.generate_document_response["file_name"]}'))

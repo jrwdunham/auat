@@ -10,6 +10,7 @@ import pprint
 import shlex
 import subprocess
 
+from . import des_api_ability
 from . import dgs_api_ability
 from . import ess_api_ability
 from . import gmail_client_ability
@@ -37,4 +38,5 @@ class TSBCNCUser(base.Base):
         super().__init__(**kwargs)
         self.dgs = dgs_api_ability.DGSAPIAbility(**kwargs)
         self.ess = ess_api_ability.ESSAPIAbility(**kwargs)
+        self.des = des_api_ability.DESAPIAbility(**kwargs)
         self.gmail = gmail_client_ability.GMailClientAbility(**kwargs)
