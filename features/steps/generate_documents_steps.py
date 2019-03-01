@@ -223,10 +223,12 @@ def phrases_in_pdf(expected_phrases):
         actual_phrases = dgs_ability.pdf2phrases(document_bytes)
         missing_phrases = expected_phrases - actual_phrases
         if missing_phrases:
+            actual_phrases_str = '\n'.join(actual_phrases)
             return (f'The expected phrases are not all present in those extracted from'
                     f' the generated PDF file. There is/are'
                     f' {len(missing_phrases)} MISSING PHRASES; here is one:'
-                    f' "{list(missing_phrases)[0]}".')
+                    f' "{list(missing_phrases)[0]}". Here are the actual'
+                    f' phrases from the PDF:\n{actual_phrases_str}')
     return f
 
 

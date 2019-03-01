@@ -31,7 +31,6 @@ PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER = {
     'Energy Utility',
     'FRM-1623',
     'Fee Description',
-    'Friendly Reminder Date:',
     'Friendly Reminder Operating Permit Renewal',
     'Invoice',
     'Invoice Summary',
@@ -171,7 +170,6 @@ PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'BC Safety Authority is now Technical Safety BC. While we have changed our '
     'name, we remain committed to our vision of Safe Technical',
     'FRM-1626',
-    'Final Warning Date:',
     'Final Warning Operating Permit Renewal Notice',
     'Further to the Demand Notice you have received from us, your operating '
     'permit(s) is/are expired.',
@@ -227,7 +225,6 @@ PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER = {
     'name, we remain committed to our vision of Safe Technical',
     'Electrical operating permit(s).',
     'FRM-1627',
-    'Final Notice Date:',
     'Final Notice Operating Permit Renewal',
     'Operating permits will be issued upon receipt of payment and signed FSR '
     'Verification form for',
@@ -375,7 +372,6 @@ PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'name, we remain committed to our vision of Safe Technical',
     'BC.',
     'FRM-1630',
-    'Final Warning Date:',
     'Final Warning Summary Notice',
     'Further to our Demand Summary notice, our records still indicate that you '
     'have failed to make',
@@ -436,7 +432,6 @@ PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER = {
     'permit(s), call our contact center at 1',
     'Due Date',
     'FRM-1631',
-    'Final Notice Date:',
     'Final Notice Summary',
     'For fast, easy payment, use our online services! Login with your online '
     'account details or register for an online',
