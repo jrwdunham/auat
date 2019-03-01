@@ -38,7 +38,7 @@ def step_impl(context):
 # Thens
 # ------------------------------------------------------------------------------
 
-@then('a letter referencing the document is created in the ESS')
+@then('a letter referencing the document is created in the DES')
 def step_impl(context):
     assert isinstance(context.scenario.deliver_letter_response['id'], int), (
         f'The deliver letter request to the DES failed: the response did not have'

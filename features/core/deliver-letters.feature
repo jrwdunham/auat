@@ -5,7 +5,7 @@
 # Service (DGS) instances::
 #
 #     $ behave \
-#           --tags=letter-deliver \
+#           --tags=letter-delivery \
 #           -D des_url=http://127.0.0.1:61780/micros/des/v1/api/ \
 #           -D des_access_token=<DES_TOKEN> \
 #           -D dgs_url=http://127.0.0.1:61780/micros/dgs/v1/api/ \
@@ -27,7 +27,7 @@ Feature: PDF Letter Delivery
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter that references the document in the DES
-    Then a letter referencing the document is created in the ESS
+    Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
 
     Examples: templates and contexts
@@ -43,7 +43,7 @@ Feature: PDF Letter Delivery
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter that references the document in the DES
-    Then a letter referencing the document is created in the ESS
+    Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
 
     Examples: templates and contexts
@@ -58,7 +58,7 @@ Feature: PDF Letter Delivery
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter that references the document in the DES
-    Then a letter referencing the document is created in the ESS
+    Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
 
     Examples: templates and contexts
