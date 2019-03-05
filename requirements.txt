@@ -1,12 +1,1 @@
-behave>=1.0
-git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@DG-3-grouping-permit-templates-update
-git+https://jdunham@bitbucket.safetyauthority.ca/scm/ess/email-sending-service-api.git@ESS-8-fix-pip-installability
-git+https://jdunham@bitbucket.safetyauthority.ca/scm/des/delivery-service-api.git@DES-5-fix-pip-installability
-google-api-python-client==1.7.8
-google-auth-httplib2==0.0.3
-google-auth-oauthlib==0.2.0
-htmlmin==0.1.12
-mail-parser==3.9.2
-requests==2.21.0
-slate3k==0.5.3
-tox==3.7.0
+-r requirements/production.txt

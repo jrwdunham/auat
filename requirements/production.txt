@@ -1,0 +1,14 @@
+# Pro-tip: Try not to put anything here. There should be no dependency in
+# production that isn't in development.
+-r base.txt
+
+# These ARE put here because this is a private BitBucket repo that cannot be
+# accessed outside of trusted networks. A developer installing the TSBC-NC-AUAT
+# might want to install the other dependencies but choose another method for
+# installing the following ones:
+
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@develop
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/ess/email-sending-service-api.git@develop
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/des/delivery-service-api.git@develop
+
+# TODO: remove the "jdunham" from the above.

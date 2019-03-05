@@ -58,6 +58,8 @@ def step_impl(context):
     corresponding document from the MDS, and then assert that the two HTML
     documents are identical.
     """
+    if os.getenv('SKIP_EMAIL_DELIVERY_VERIFICATION') == 'true':
+        return
     from_email_client = None
     sleep = 1
     for i in range(3):

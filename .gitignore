@@ -2,6 +2,8 @@ TSBC-NC-AUAT.log
 data/
 .tsbc-nc-tmp/
 secrets/
+reports/
+requirements/secret.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

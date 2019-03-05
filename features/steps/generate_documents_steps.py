@@ -48,9 +48,11 @@ def step_impl(context, output_type, template_key, context_path):
         'output_type': output_type,
         'template_key': template_key,
         'context_path': context_path,}
-    context.scenario.generate_document_response = (
-        context.user.dgs.generate_document(
-            template_key, context_path, output_type=output_type))
+    generate_document_response = context.user.dgs.generate_document(
+        template_key, context_path, output_type=output_type)
+    generate_document_response['url'] = utils.internalize_url(
+        generate_document_response['url'])
+    context.scenario.generate_document_response = generate_document_response
 
 
 # Thens
@@ -71,7 +73,7 @@ def step_impl(context):
         f'Failed to download generated document'
         f' {context.scenario.generate_document_response["file_name"]}'
         f' from url'
-        f' {context.scenario.generate_document_response["url"]}.'
+        f' {url}.'
         f' There is no file at the expected download path'
         f' {context.scenario.downloaded_doc_path}.')
 
