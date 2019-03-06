@@ -114,6 +114,9 @@ class DGSAPIAbility(base.Base):
         with open(html_path, 'w') as fho:
             fho.write(self.minify_html(html))
 
+    def get_template_by_key(self, key):
+        return dgs_client.get_template_by_key(self.dgs_client_config, key)
+
     def download_mds_doc_and_write_to_disk(self, doc_url, doc_file_name,
                                            doc_processor=None):
         config = self.dgs_client_config
