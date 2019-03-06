@@ -23,7 +23,7 @@ Feature: Email Sending
   Email Sending Service (ESS). The emails being sent are HTML documents created
   using the Document Generator Service (DGS).
 
-  @send-ar-op-cons-emails @template.template_key.<template_key> @production
+  @send-ar-op-cons-emails @template.template_key.<template_key>
   Scenario Outline: Dan wants to send sample Accounts Receivable (AR) Operating Permit (OP) renewal emails to an email address that he can access so that he can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
@@ -32,7 +32,6 @@ Feature: Email Sending
     And an email referencing the document is created in the ESS
     And the email has status sent
     And the email is delivered to the tester
-    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -42,7 +41,7 @@ Feature: Email Sending
     | ar_op_final_warning_consolidated_email     | text/html   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_email      | text/html   | ar-op-final-notice-consolidated.json      |
 
-  @send-ar-gen-cons-emails @template.template_key.<template_key> @production
+  @send-ar-gen-cons-emails @template.template_key.<template_key>
   Scenario Outline: Ireen wants to send sample Accounts Receivable (AR) general invoice notice emails to an email address that she can access so that she can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
@@ -50,7 +49,6 @@ Feature: Email Sending
     Then an email referencing the document is created in the ESS
     And the email has status sent
     And the email is delivered to the tester
-    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                               | output_type | context_path                              |
@@ -59,7 +57,7 @@ Feature: Email Sending
     | ar_gen_final_warning_consolidated_email    | text/html   | ar-gen-final-warning-consolidated.json    |
     | ar_gen_final_notice_consolidated_email     | text/html   | ar-gen-final-notice-consolidated.json     |
 
-  @send-tnc-cons-emails @template.template_key.<template_key> @production
+  @send-tnc-cons-emails @template.template_key.<template_key>
   Scenario Outline: Thor wants to send sample consolidated TNC notice HTML emails to an email address that he can access so that he can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
@@ -67,10 +65,22 @@ Feature: Email Sending
     Then an email referencing the document is created in the ESS
     And the email has status sent
     And the email is delivered to the tester
-    # And the email renders correctly in the email client of the tester
 
     Examples: templates and contexts
     | template_key                                       | output_type | context_path                                                       |
     | inspection_nc_friendly_reminder_consolidated_email | text/html   | inspection-nc-friendly-reminder-consolidated.json                  |
     | inspection_nc_past_due_consolidated_email          | text/html   | inspection-nc-past-due-consolidated.json                           |
     | inspection_nc_final_warning_consolidated_email     | text/html   | inspection-nc-final-warning-consolidated-multiple-permits.json     |
+
+  @send-miscellaneous-emails @template.template_key.<template_key>
+  Scenario Outline: Young wants to send sample miscellaneous HTML emails to an email address that he can access so that he can verify that the emails are delivered to their recipients and that they render correctly in target email clients.
+    Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
+    When a document of type <output_type> is generated from template <template_key> using data context <context_path>
+    And a request is made to create an email and send it to the tester using the ESS and the generated document
+    Then an email referencing the document is created in the ESS
+    And the email has status sent
+    And the email is delivered to the tester
+
+    Examples: templates and contexts
+    | template_key                | output_type | context_path                     |
+    | so_waived_inspections_email | text/html   | so-waived-inspections-email.json |

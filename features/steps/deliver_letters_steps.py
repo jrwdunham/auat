@@ -25,10 +25,12 @@ logger = logging.getLogger('tsbc-nc-auat.deliver-letters-steps')
 @when('a request is made to create a letter that references the document in the'
       ' DES')
 def step_impl(context):
+    url = utils.internalize_url(
+        context.scenario.generate_document_response['url'])
     letter_dict = {
         'file-name': context.scenario.generate_document_response['file_name'],
         'folder': 'BCMail',
-        'source-url': context.scenario.generate_document_response['url'],
+        'source-url': url,
         'status': 'not delivered',
     }
     context.scenario.deliver_letter_response = (

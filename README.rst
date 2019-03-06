@@ -14,7 +14,6 @@ Consolidated Email Generation* feature file
       Clients of the TSBC NC APIs want to be able to generate HTML email documents
       using the Email Sending Service (ESS).
 
-      @production
       Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML email documents using the DGS and confirm that the generated documents have the expected properties.
         Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
         When a document of type <output_type> is generated from template <template_key> using data context <context_path>
@@ -165,17 +164,17 @@ To see all of the Behave user data flags that the TSBC-NC-AUAT recognizes, inspe
 ``get_tsbc_nc_user`` function of the ``features/environment.py`` module.
 
 To run all tests that match *any* of a set of tags, separate the tags by commas.
-For example, the following will run all of the *AR OP Consolidated HTML Email
-Generation* (``generate-ar-op-cons-emails``) *AR OP Consolidated PDF Letter
-Generation* (``generate-ar-op-cons-letters``) tests::
+For example, the following will run all of the *HTML Email Generation*
+(``email-gen``) and all of the *PDF Letter Generation* (``letter-gen``) tests::
 
-    $ behave --tags=generate-ar-op-cons-emails,generate-ar-op-cons-letters
+    $ behave --tags=email-gen,letter-gen
 
 To run all tests that match *all* of a set of tags, use separate ``--tags``
-flags for each tag. For example, the following will run only the production
-scenario of the *AR OP Consolidated HTML Email Generation* feature::
+flags for each tag. For example, the following will run only the *AR OP
+Consolidated HTML Email Generation* scenario of the HTML Email Generation
+feature::
 
-    $ behave --tags=generate-ar-op-cons-emails --tags=production
+    $ behave --tags=email-gen --tags=generate-ar-op-cons-emails
 
 In addition to the general guidance just provided, all of the feature files in
 the ``features/`` directory should contain comments clearly indicating how they

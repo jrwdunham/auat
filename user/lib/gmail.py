@@ -29,6 +29,9 @@ class GMailError(Exception):
     """GMail-specific exception."""
 
 
+SECRETS_PATH_DFLT = 'secrets/gmail-credentials.json'
+SECRETS_PATH = os.getenv('GMAIL_SECRETS_PATH', SECRETS_PATH_DFLT)
+
 class GMailClient:
 
     def __init__(self, **kargs):
@@ -37,7 +40,7 @@ class GMailClient:
     @property
     def service(self):
         """Returns a GMail Service instance for accessing the GMail API. Assumes a
-        gmail credentials JSON file at secrets/gmail-credentials.json.
+        gmail credentials JSON file at SECRETS_PATH.
         """
         if self._service:
             return self._service
@@ -54,7 +57,7 @@ class GMailClient:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'secrets/gmail-credentials.json', SCOPES)
+                    SECRETS_PATH, SCOPES)
                 creds = flow.run_local_server()
             # Save the credentials for the next run
             with open('secrets/gmail-token.pickle', 'wb') as token:

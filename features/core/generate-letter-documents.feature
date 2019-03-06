@@ -1,4 +1,4 @@
-# HTML Letter Generation Feature
+# PDF Letter Generation Feature
 #
 # To run this feature file against a Docker-compose deploy of TSBC NC DGS::
 #
@@ -20,12 +20,12 @@
 #           ...
 
 @letter-gen
-Feature: HTML Letter Generation
+Feature: PDF Letter Generation
   Clients of the TSBC NC APIs want to be able to generate PDF (from HTML)
   letter documents using the Document Generator Service (DGS).
 
-  @generate-ar-op-cons-letters @template.template_key.<template_key> @production
-  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal HTML letter documents using the DGS and confirm that the generated documents have the expected properties.
+  @generate-ar-op-cons-letters @template.template_key.<template_key>
+  Scenario Outline: Dan wants to generate the Accounts Receivable (AR) Operating Permit (OP) renewal PDF letter documents using the DGS and confirm that the generated documents have the expected properties.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     Then the generated document is stored in the MDS
@@ -39,8 +39,8 @@ Feature: HTML Letter Generation
     | ar_op_final_warning_consolidated_letter     | application/pdf   | ar-op-final-warning-consolidated.json     |
     | ar_op_final_notice_consolidated_letter      | application/pdf   | ar-op-final-notice-consolidated.json      |
 
-  @generate-ar-gen-cons-letters @template.template_key.<template_key> @production
-  Scenario Outline: Ireen wants to generate the Accounts Receivable (AR) general invoice notice HTML letter documents using the DGS and confirm that the generated documents have the expected properties.
+  @generate-ar-gen-cons-letters @template.template_key.<template_key>
+  Scenario Outline: Ireen wants to generate the Accounts Receivable (AR) general invoice notice PDF letter documents using the DGS and confirm that the generated documents have the expected properties.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     Then the generated document is stored in the MDS
@@ -53,8 +53,8 @@ Feature: HTML Letter Generation
     | ar_gen_final_warning_consolidated_letter    | application/pdf   | ar-gen-final-warning-consolidated.json    |
     | ar_gen_final_notice_consolidated_letter     | application/pdf   | ar-gen-final-notice-consolidated.json     |
 
-  @generate-tnc-cons-letters @template.template_key.<template_key> @production
-  Scenario Outline: Thor wants to generate consolidated TNC notice HTML letter documents using the DGS and confirm that the generated documents have the expected properties.
+  @generate-tnc-cons-letters @template.template_key.<template_key>
+  Scenario Outline: Thor wants to generate consolidated TNC notice PDF letter documents using the DGS and confirm that the generated documents have the expected properties.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     Then the generated document is stored in the MDS
@@ -65,3 +65,14 @@ Feature: HTML Letter Generation
     | inspection_nc_friendly_reminder_consolidated_letter | application/pdf   | inspection-nc-friendly-reminder-consolidated.json                  |
     | inspection_nc_past_due_consolidated_letter          | application/pdf   | inspection-nc-past-due-consolidated.json                           |
     | inspection_nc_final_warning_consolidated_letter     | application/pdf   | inspection-nc-final-warning-consolidated-multiple-permits.json     |
+
+  @generate-miscellaneous-letters @template.template_key.<template_key>
+  Scenario Outline: Young wants to generate miscellaneous PDF letter documents using the DGS and confirm that the generated documents have the expected properties.
+    Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
+    When a document of type <output_type> is generated from template <template_key> using data context <context_path>
+    Then the generated document is stored in the MDS
+    And the generated document is rendered correctly
+
+    Examples: templates and contexts
+    | template_key                  | output_type       | context_path                     |
+    | so_waived_inspections_letter  | application/pdf   | so-waived-inspections-email.json |

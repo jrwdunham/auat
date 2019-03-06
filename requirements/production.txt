@@ -7,7 +7,7 @@
 # might want to install the other dependencies but choose another method for
 # installing the following ones:
 
-git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@develop
+git+https://jdunham@bitbucket.safetyauthority.ca/scm/nc/document-generator-service.git@DG-26-so-waived-fixes
 git+https://jdunham@bitbucket.safetyauthority.ca/scm/ess/email-sending-service-api.git@develop
 git+https://jdunham@bitbucket.safetyauthority.ca/scm/des/delivery-service-api.git@develop
 

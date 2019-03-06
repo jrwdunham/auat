@@ -600,3 +600,40 @@ PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER = {
     'declaration via your online',
     'requirement.'
 }
+
+PHRASES_SO_WAIVED_INSPECTIONS_LETTER = {
+    'and at this time no further actions are required. Please note that since a'
+    ' physical inspection was not',
+    '123 SOME STREET',
+    'Safety BC at 1 866 566 7233.',
+    'performed, your submitted declaration form serves as documentation'
+    ' verifying that the scope of',
+    'Thank you,',
+    'work has been completed to Code.',
+    'Safety Officer Name: Dave Gilmour',
+    'If you have any questions regarding this permit and or corresponding'
+    ' inspection(s), please contact Technical',
+    'Suite 600 - 2889 East 12th Avenue Vancouver, BC V5M 4T5 T 1 866 566 7233 E'
+    ' contact@technicalsafetybc.ca www.technicalsafetybc.ca',
+    'VANCOUVER BC V8V 8V8',
+    'Thank you for submitting your declaration. After reviewing your'
+    ' declaration, your inspection has been assessed',
+    'Safety Officer Email: Dave.Gilmour@technicalsafetybc.ca',
+    'Systems. Everywhere. Learn more about our evolving services and how we'
+    ' share safety knowledge at www.technicalsafetybc.ca.',
+    'FRM-0001',
+    'Dear John Smith,',
+    'BC Safety Authority is now Technical Safety BC. While we have changed our'
+    ' name, we remain committed to our vision of Safe Technical',
+    'Page 1 of 1',
+    'Safety Officer Phone: 604-999-7777',
+    'For information on the Safety Standards Act, Regulations, and the'
+    ' review/appeal process, please visit',
+    'Declaration submitted for Permit #',
+    '<INSPECTIONNUMBER>',
+    '<PERMITNUMBER> and Inspection #',
+    'www.technicalsafetybc.ca.',
+    'Dave Gilmour',
+    'Some Company Inc.',
+    'ATTN: John Smith',
+}

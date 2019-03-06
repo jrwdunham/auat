@@ -21,6 +21,7 @@ from features.steps.expected_pdf_phrases import (
     PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
     PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER,
     PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER,
+    PHRASES_SO_WAIVED_INSPECTIONS_LETTER,
 )
 
 
@@ -48,11 +49,9 @@ def step_impl(context, output_type, template_key, context_path):
         'output_type': output_type,
         'template_key': template_key,
         'context_path': context_path,}
-    generate_document_response = context.user.dgs.generate_document(
-        template_key, context_path, output_type=output_type)
-    generate_document_response['url'] = utils.internalize_url(
-        generate_document_response['url'])
-    context.scenario.generate_document_response = generate_document_response
+    context.scenario.generate_document_response = (
+        context.user.dgs.generate_document(
+            template_key, context_path, output_type=output_type))
 
 
 # Thens
@@ -64,9 +63,11 @@ def step_impl(context):
         'application/pdf': lambda d: d,
         'text/html': context.user.dgs.minify_html_file,}.get(
             context.scenario.generated_document_params['output_type'])
+    url = utils.internalize_url(
+        context.scenario.generate_document_response['url'])
     context.scenario.downloaded_doc_path = (
         context.user.dgs.download_mds_doc_and_write_to_disk(
-            context.scenario.generate_document_response['url'],
+            url,
             context.scenario.generate_document_response['file_name'],
             doc_processor=doc_processor))
     assert os.path.isfile(context.scenario.downloaded_doc_path), (
@@ -153,6 +154,14 @@ def confirm_banner_text_is(banner_text):
             f' sans-serif;">{banner_text}</h3></div>') not in document_str:
             return (f'Failed to find expected text "{banner_text}" in the'
                     f' blue banner at the top of the email.')
+    return f
+
+
+def confirm_greeting_is(greeting_text):
+    def f(document_str, dgs_ability):
+        if greeting_text not in document_str:
+            return (f'Failed to find expected greeting "{greeting_text}" in the'
+                    f' email.')
     return f
 
 
@@ -387,6 +396,21 @@ VALIDATORS_BY_RECIPE = {
 
     # TNC CONSOLIDATED NOTICES - END
 
+    # MISCELLANEOUS EMAILS - START
+
+    Recipe(
+        template='so_waived_inspections_email',
+        context='so-waived-inspections-email.json',
+        otype='text/html',):
+    (
+        confirm_banner_text_is(
+            'Declaration submitted for Permit # &lt;PERMITNUMBER&gt; and'
+            ' Inspection # &lt;INSPECTIONNUMBER&gt;'),
+        confirm_greeting_is('Dear John Smith,'),
+    ),
+
+    # MISCELLANEOUS EMAILS - END
+
     # AR OP CONSOLIDATED LETTER NOTICES - START
 
     Recipe(
@@ -494,6 +518,18 @@ VALIDATORS_BY_RECIPE = {
     ),
 
     # TNC CONSOLIDATED LETTER NOTICES - END
+
+    # MISCELLANEOUS LETTER NOTICES - START
+
+    Recipe(
+        template='so_waived_inspections_letter',
+        context='so-waived-inspections-email.json',
+        otype='application/pdf'):
+    (
+        phrases_in_pdf(PHRASES_SO_WAIVED_INSPECTIONS_LETTER),
+    ),
+
+    # MISCELLANEOUS LETTER NOTICES - END
 
 }
 

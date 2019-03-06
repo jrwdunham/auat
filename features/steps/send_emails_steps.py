@@ -85,7 +85,6 @@ def step_impl(context):
             context.scenario.generate_document_response['url'],
             f'not-minified-'  # NOTE: NOT MINIFIED
             f'{context.scenario.generate_document_response["file_name"]}'))
-    context.scenario.generate_document_response['url'],
     with open(downloaded_doc_path) as fh:
         # assert from_email_client == from_mds  <== oddly, this fails ...
         from_mds = fh.read()
