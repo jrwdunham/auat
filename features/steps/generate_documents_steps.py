@@ -8,20 +8,20 @@ import pprint
 from behave import when, then, given, use_step_matcher
 
 from features.steps import utils
-from features.steps.expected_pdf_phrases import (
-    PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
-    PHRASES_AR_OP_PAST_DUE_CONSOLIDATED_LETTER,
-    PHRASES_AR_OP_DEMAND_CONSOLIDATED_LETTER,
-    PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER,
-    PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER,
-    PHRASES_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER,
-    PHRASES_AR_GEN_DEMAND_CONSOLIDATED_LETTER,
-    PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER,
-    PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER,
-    PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
-    PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER,
-    PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER,
-    PHRASES_SO_WAIVED_INSPECTIONS_LETTER,
+from features.steps.expected_pdf_texts import (
+    TEXTS_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
+    TEXTS_AR_OP_PAST_DUE_CONSOLIDATED_LETTER,
+    TEXTS_AR_OP_DEMAND_CONSOLIDATED_LETTER,
+    TEXTS_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER,
+    TEXTS_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER,
+    TEXTS_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER,
+    TEXTS_AR_GEN_DEMAND_CONSOLIDATED_LETTER,
+    TEXTS_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER,
+    TEXTS_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER,
+    TEXTS_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
+    TEXTS_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER,
+    TEXTS_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER,
+    TEXTS_SO_WAIVED_INSPECTIONS_LETTER,
 )
 
 
@@ -243,6 +243,14 @@ def phrases_in_pdf(expected_phrases):
     return f
 
 
+def normalized_text_is(expected_normalized_text):
+    def f(document_bytes, dgs_ability):
+        actual_normalized_text = dgs_ability.pdf2normalized_text(
+            document_bytes)
+        if actual_normalized_text != expected_normalized_text:
+            return actual_normalized_text
+    return f
+
 # Map 3-tuple recipes for document generation (template_key, context_path,
 # output_type) to tuples of "validators", functions that expect the generated
 # document as their sole argument.
@@ -418,7 +426,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-friendly-reminder-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -426,7 +434,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_OP_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_OP_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -434,7 +442,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-demand-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_OP_DEMAND_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_OP_DEMAND_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -442,7 +450,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-final-warning-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -450,7 +458,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-final-notice-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER),
     ),
 
     # AR OP CONSOLIDATED LETTER NOTICES - END
@@ -462,7 +470,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -470,7 +478,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-demand-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_GEN_DEMAND_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_GEN_DEMAND_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -478,7 +486,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-final-warning-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -486,7 +494,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-final-notice-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER),
     ),
 
     # AR GEN CONSOLIDATED LETTER NOTICES - END
@@ -498,7 +506,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-friendly-reminder-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -506,7 +514,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -514,7 +522,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-final-warning-consolidated-multiple-permits.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_is(TEXTS_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     # TNC CONSOLIDATED LETTER NOTICES - END
@@ -526,7 +534,7 @@ VALIDATORS_BY_RECIPE = {
         context='so-waived-inspections-email.json',
         otype='application/pdf'):
     (
-        phrases_in_pdf(PHRASES_SO_WAIVED_INSPECTIONS_LETTER),
+        normalized_text_is(TEXTS_SO_WAIVED_INSPECTIONS_LETTER),
     ),
 
     # MISCELLANEOUS LETTER NOTICES - END

@@ -6,6 +6,7 @@ user's ability to use the Document Generator Service's APIs.
 
 import logging
 import os
+import re
 import time
 
 import htmlmin
@@ -23,6 +24,10 @@ from . import base
 
 
 logger = logging.getLogger('tsbc-nc-user.dgs-api')
+
+
+WHITE_SPACE_PATT = re.compile('\s+')
+
 
 
 class DGSAPIAbilityError(base.TSBCNCUserError):
@@ -137,10 +142,21 @@ class DGSAPIAbility(base.Base):
         return slate.PDF(pdf_path)
 
     def pdf2phrases(self, pdf_path):
-        """Return a list of the textual "phrases" in the PDF at ``pdf_path``.
+        """Return a set of the textual "phrases" in the PDF at ``pdf_path``.
         These are snippets of contiguous text, as returned by slate (slate3k),
         with whitespace removed.
         """
         return set(filter(
             None, [phrase.strip() for phrase in
                    self.pdf2text(pdf_path)[0].splitlines()]))
+
+    @staticmethod
+    def normalize_all_whitespace(some_text):
+        return WHITE_SPACE_PATT.sub(' ', some_text).strip()
+
+    def pdf2normalized_text(self, pdf_path):
+        """Return a string of white-space-normalized text extracted from the PDF
+        at ``pdf_path``. This is the text extracted by slate (slate3k) with all
+        contiguous whitespace blocks replaced with a single space.
+        """
+        return self.normalize_all_whitespace(self.pdf2text(pdf_path)[0])
