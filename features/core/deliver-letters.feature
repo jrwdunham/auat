@@ -26,9 +26,10 @@ Feature: PDF Letter Delivery
   Scenario Outline: Dan wants to deliver sample Accounts Receivable (AR) Operating Permit (OP) renewal letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    And a request is made to create a letter that references the document in the DES
+    And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
+    And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
     | template_key                                | output_type       | context_path                              |
@@ -42,9 +43,10 @@ Feature: PDF Letter Delivery
   Scenario Outline: Ireen wants to deliver sample Accounts Receivable (AR) general invoice notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    And a request is made to create a letter that references the document in the DES
+    And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
+    And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
     | template_key                                | output_type       | context_path                              |
@@ -57,9 +59,10 @@ Feature: PDF Letter Delivery
   Scenario Outline: Thor wants to deliver sample TNC notice letters to test permit holders and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    And a request is made to create a letter that references the document in the DES
+    And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
+    And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
     | template_key                                        | output_type       | context_path                                                       |
@@ -71,9 +74,10 @@ Feature: PDF Letter Delivery
   Scenario Outline: Young wants to deliver sample miscellaneous letters to various recipients and confirm that the letters are deposited correctly in the Delivery Service.
     Given a DGS instance containing an up-to-date template <template_key>, including its template dependencies
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
-    And a request is made to create a letter that references the document in the DES
+    And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
     And the letter has status "not delivered"
+    And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
 

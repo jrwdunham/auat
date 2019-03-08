@@ -243,12 +243,23 @@ def phrases_in_pdf(expected_phrases):
     return f
 
 
-def normalized_text_is(expected_normalized_text):
+def normalized_text_contains(expected_normalized_texts):
+    """Return a validator function that checks whether all of the texts
+    (strings) in expected_normalized_texts are present in document_bytes.
+    """
     def f(document_bytes, dgs_ability):
         actual_normalized_text = dgs_ability.pdf2normalized_text(
             document_bytes)
-        if actual_normalized_text != expected_normalized_text:
-            return actual_normalized_text
+        errors = []
+        for text in expected_normalized_texts:
+            if text not in actual_normalized_text:
+                errors.append(text)
+        if errors:
+            delim = "\n\n"
+            return (f'At least one expected normalized text fragment was not'
+                    f' found in the actual normalized text of the document. The'
+                    f' following text fragments were not'
+                    f' found:\n\n{delim.join(errors)}')
     return f
 
 # Map 3-tuple recipes for document generation (template_key, context_path,
@@ -426,7 +437,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-friendly-reminder-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -434,7 +445,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_OP_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_OP_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -442,7 +453,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-demand-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_OP_DEMAND_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_OP_DEMAND_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -450,7 +461,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-final-warning-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_OP_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -458,7 +469,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-op-final-notice-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_OP_FINAL_NOTICE_CONSOLIDATED_LETTER),
     ),
 
     # AR OP CONSOLIDATED LETTER NOTICES - END
@@ -470,7 +481,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_GEN_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -478,7 +489,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-demand-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_GEN_DEMAND_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_GEN_DEMAND_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -486,7 +497,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-final-warning-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_GEN_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -494,7 +505,7 @@ VALIDATORS_BY_RECIPE = {
         context='ar-gen-final-notice-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_AR_GEN_FINAL_NOTICE_CONSOLIDATED_LETTER),
     ),
 
     # AR GEN CONSOLIDATED LETTER NOTICES - END
@@ -506,7 +517,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-friendly-reminder-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -514,7 +525,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-past-due-consolidated.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER),
     ),
 
     Recipe(
@@ -522,7 +533,7 @@ VALIDATORS_BY_RECIPE = {
         context='inspection-nc-final-warning-consolidated-multiple-permits.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER),
+        normalized_text_contains(TEXTS_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER),
     ),
 
     # TNC CONSOLIDATED LETTER NOTICES - END
@@ -534,7 +545,7 @@ VALIDATORS_BY_RECIPE = {
         context='so-waived-inspections-email.json',
         otype='application/pdf'):
     (
-        normalized_text_is(TEXTS_SO_WAIVED_INSPECTIONS_LETTER),
+        normalized_text_contains(TEXTS_SO_WAIVED_INSPECTIONS_LETTER),
     ),
 
     # MISCELLANEOUS LETTER NOTICES - END
@@ -555,7 +566,7 @@ def validate_document_generation(recipe, generated_doc_path, dgs_ability):
             f' The recipe {pprint.pformat(recipe)}'
             f' corresponds to no validators.')
     _, ext = os.path.splitext(generated_doc_path)
-    kwargs = {'.pdf': {'mode': 'rb'}}.get(ext, {})
+    kwargs = {'.pdf': {'mode': 'rb'}}.get(ext.lower(), {})
     with open(generated_doc_path, **kwargs) as fh:
         haystack = fh
         if not kwargs:
