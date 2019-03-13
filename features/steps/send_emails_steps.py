@@ -35,6 +35,30 @@ def step_impl(context):
             context.scenario.generate_document_response['url'],))
 
 
+@when('an email is generated from {template_key} and {context_path} and sent')
+def step_impl(context, template_key, context_path):
+    """A "meta"-step that does a bunch of sub-steps to generate, store and send
+    an email. If this runs successfully, the following attributes will be
+    present in the context::
+
+        >>> context.scenario.send_email_resp = {
+        ...     "keys" ['status', 'id', 'toemail', 'fromemail']}
+        >>> context.scenario.generated_document_params = {
+        ...     "keys": ['output_type', 'template_key', 'context_path']}
+
+    """
+    context.execute_steps(
+        f'Given a DGS instance containing an up-to-date template'
+          f' {template_key}, including its template dependencies\n'
+        f'When a document of type text/html is generated from template'
+          f' {template_key} using data context {context_path}\n'
+        f'And a request is made to create an email and send it to the tester'
+          f' using the ESS and the generated document\n'
+        f'Then the generated document is stored in the MDS\n'
+        f'And an email referencing the document is created in the ESS\n'
+        f'And the email has status sent\n')
+
+
 # Thens
 # ------------------------------------------------------------------------------
 

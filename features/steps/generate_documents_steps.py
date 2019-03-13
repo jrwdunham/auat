@@ -22,6 +22,10 @@ from features.steps.expected_pdf_texts import (
     TEXTS_INSPECTION_NC_PAST_DUE_CONSOLIDATED_LETTER,
     TEXTS_INSPECTION_NC_FINAL_WARNING_CONSOLIDATED_LETTER,
     TEXTS_SO_WAIVED_INSPECTIONS_LETTER,
+    TEXTS_RECORD_OF_SENT_EMAIL_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_EMAIL,
+    TEXTS_RECORD_OF_SENT_EMAIL_AR_GEN_PAST_DUE_CONSOLIDATED_EMAIL,
+    TEXTS_RECORD_OF_SENT_EMAIL_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_EMAIL,
+    TEXTS_RECORD_OF_SENT_EMAIL_SO_WAIVED_INSPECTIONS_EMAIL,
 )
 
 
@@ -57,22 +61,31 @@ def step_impl(context, output_type, template_key, context_path):
 # Thens
 # ------------------------------------------------------------------------------
 
-@then('the generated document is stored in the MDS')
-def step_impl(context):
+@then('the {document_description} is stored in the MDS')
+def step_impl(context, document_description):
+    """Expect ``document_description`` to be one of 'generated document' or
+    'record'.
+    """
+    if document_description == 'record':
+        generated_document_params = context.scenario.generated_record_params
+        generate_document_response = context.scenario.generate_record_response
+    else:
+        generated_document_params = context.scenario.generated_document_params
+        generate_document_response = context.scenario.generate_document_response
     doc_processor = {
         'application/pdf': lambda d: d,
         'text/html': context.user.dgs.minify_html_file,}.get(
-            context.scenario.generated_document_params['output_type'])
+            generated_document_params['output_type'])
     url = utils.internalize_url(
-        context.scenario.generate_document_response['url'])
+        generate_document_response['url'])
     context.scenario.downloaded_doc_path = (
         context.user.dgs.download_mds_doc_and_write_to_disk(
             url,
-            context.scenario.generate_document_response['file_name'],
+            generate_document_response['file_name'],
             doc_processor=doc_processor))
     assert os.path.isfile(context.scenario.downloaded_doc_path), (
         f'Failed to download generated document'
-        f' {context.scenario.generate_document_response["file_name"]}'
+        f' {generate_document_response["file_name"]}'
         f' from url'
         f' {url}.'
         f' There is no file at the expected download path'
@@ -88,6 +101,18 @@ def step_impl(context):
         template=context.scenario.generated_document_params['template_key'],
         context=context.scenario.generated_document_params['context_path'],
         otype=context.scenario.generated_document_params['output_type'],)
+    validate_document_generation(
+        recipe,
+        context.scenario.downloaded_doc_path,
+        context.user.dgs)
+
+
+@then('the record accurately records the sending of the email')
+def step_impl(context):
+    recipe = Recipe(
+        template=context.scenario.generated_record_params['template_key'],
+        context=context.scenario.generated_record_params['context_path'],
+        otype=context.scenario.generated_record_params['output_type'],)
     validate_document_generation(
         recipe,
         context.scenario.downloaded_doc_path,
@@ -259,7 +284,9 @@ def normalized_text_contains(expected_normalized_texts):
             return (f'At least one expected normalized text fragment was not'
                     f' found in the actual normalized text of the document. The'
                     f' following text fragments were not'
-                    f' found:\n\n{delim.join(errors)}')
+                    f' found:\n\n{delim.join(errors)}\n\n'
+                    f'The actual normalized text is:\n\n'
+                    f'{actual_normalized_text}')
     return f
 
 # Map 3-tuple recipes for document generation (template_key, context_path,
@@ -550,6 +577,45 @@ VALIDATORS_BY_RECIPE = {
 
     # MISCELLANEOUS LETTER NOTICES - END
 
+    # RECORDS OF EMAILS (PDFS) - START
+
+    Recipe(
+        template='record_of_sent_email',
+        context='ar-op-friendly-reminder-consolidated.json',
+        otype='application/pdf'):
+    (
+        normalized_text_contains(
+            TEXTS_RECORD_OF_SENT_EMAIL_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_EMAIL),
+    ),
+
+    Recipe(
+        template='record_of_sent_email',
+        context='ar-gen-past-due-consolidated.json',
+        otype='application/pdf'):
+    (
+        normalized_text_contains(
+            TEXTS_RECORD_OF_SENT_EMAIL_AR_GEN_PAST_DUE_CONSOLIDATED_EMAIL),
+    ),
+
+    Recipe(
+        template='record_of_sent_email',
+        context='inspection-nc-friendly-reminder-consolidated.json',
+        otype='application/pdf'):
+    (
+        normalized_text_contains(
+            TEXTS_RECORD_OF_SENT_EMAIL_INSPECTION_NC_FRIENDLY_REMINDER_CONSOLIDATED_EMAIL),
+    ),
+
+    Recipe(
+        template='record_of_sent_email',
+        context='so-waived-inspections-email.json',
+        otype='application/pdf'):
+    (
+        normalized_text_contains(
+            TEXTS_RECORD_OF_SENT_EMAIL_SO_WAIVED_INSPECTIONS_EMAIL),
+    ),
+
+    # RECORDS OF EMAILS (PDFS) - END
 }
 
 

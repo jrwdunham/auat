@@ -4,6 +4,8 @@ This module contains the ``DGSAPIAbility`` class, which represents a
 user's ability to use the Document Generator Service's APIs.
 """
 
+import datetime
+import json
 import logging
 import os
 import re
@@ -138,8 +140,8 @@ class DGSAPIAbility(base.Base):
     def pdf2text(pdf_path):
         if isinstance(pdf_path, (str, bytes)):
             with open(pdf_path, 'rb') as fh:
-                return slate.PDF(fh)
-        return slate.PDF(pdf_path)
+                return ' '.join(slate.PDF(fh))
+        return ' '.join(slate.PDF(pdf_path))
 
     def pdf2phrases(self, pdf_path):
         """Return a set of the textual "phrases" in the PDF at ``pdf_path``.
@@ -148,7 +150,7 @@ class DGSAPIAbility(base.Base):
         """
         return set(filter(
             None, [phrase.strip() for phrase in
-                   self.pdf2text(pdf_path)[0].splitlines()]))
+                   self.pdf2text(pdf_path).splitlines()]))
 
     @staticmethod
     def normalize_all_whitespace(some_text):
@@ -159,4 +161,55 @@ class DGSAPIAbility(base.Base):
         at ``pdf_path``. This is the text extracted by slate (slate3k) with all
         contiguous whitespace blocks replaced with a single space.
         """
-        return self.normalize_all_whitespace(self.pdf2text(pdf_path)[0])
+        return self.normalize_all_whitespace(self.pdf2text(pdf_path))
+
+    @staticmethod
+    def get_email_record_create_context(email_create_template_key,
+                                        email_create_context,
+                                        send_email_dict):
+        """Using the email create key (``email_create_template_key``) and the
+        attributes of the send response (``send_email_dict``), return a context
+        dict compatible with the "record of email sending" template. That is, a
+        dict with all of the create context's keys plus these ones:
+
+            >>> {"COVERLETTERSUBJECTPREFIX": "Record of Sent Email",
+            ...  "CONTENTSUBJECTPREFIX": "Content of Sent Email",
+            ...  "LETTER_TEMPLATE_KEY": "ar_op_friendly_reminder_consolidated_letter",
+            ...  "EMAIL_TOEMAIL": "john@somecompany.com",
+            ...  "EMAIL_CC": "",
+            ...  "EMAIL_FROMEMAIL": "noreply@technicalsafetybc.ca",
+            ...  "EMAIL_SUBJECT": "Friendly Reminder Operating Permit Renewal Invoice Summary",
+            ...  "EMAIL_SENT_DATE": "2019-03-12T00:00:00Z",
+            ...  "EMAIL_STATUS": "sent",
+            ...  "EMAIL_ATTACHMENTS": [],}
+        """
+        ret = email_create_context.copy()
+        ret.update(
+            {f'email_{k}'.upper(): v for k, v in send_email_dict.items()})
+        ret.update(
+            {'COVERLETTERSUBJECTPREFIX': 'Record of Sent Email',
+             'CONTENTSUBJECTPREFIX': 'Content of Sent Email',
+             'LETTER_TEMPLATE_KEY': email_create_template_key.replace(
+                 '_email', '_letter'),
+             'EMAIL_SENT_DATE': datetime.datetime.utcnow().isoformat()})
+        return ret
+
+    def generate_and_store_email_record(self, send_email_resp,
+                                        generated_document_params):
+        """Generate and store a record of the sending of an email. The "send
+        email" JSON response dict is in ``send_email_resp``; the "generate
+        document" request JSON dict is in ``generated_document_params``.
+        """
+        record_context = self.get_email_record_create_context(
+            generated_document_params['template_key'],
+            json.loads(
+                dgs_client.get_context_str(
+                    self.verify_context_path(
+                        generated_document_params['context_path']))),
+            send_email_resp)
+        config = self.dgs_client_config
+        config['key'] = 'record_of_sent_email'
+        config['output_type'] = 'application/pdf'
+        record_context_str = json.dumps(record_context, indent=4)
+        return dgs_client.issue_generate_and_store_request(
+            config, record_context_str)
