@@ -32,7 +32,7 @@ def step_impl(context):
         'file-name': context.scenario.generate_document_response['file_name'],
         'folder': 'BCMail',
         'source-url': url,
-        'status': 'not delivered',
+        'status': 'not sent',
     }
     context.scenario.deliver_letter_response = (
         context.user.des.create_letter(letter_dict))
@@ -48,11 +48,11 @@ def step_impl(context):
         f' an id attribute of type int.')
 
 
-@then('the letter has status "not delivered"')
+@then('the letter has status "not sent"')
 def step_impl(context):
     assert context.scenario.deliver_letter_response[
-        'status'] == 'not delivered', (
-            f'The letter does not have status "not delivered".')
+        'status'] == 'not sent', (
+            f'The letter does not have status "not sent".')
 
 
 @then('the file name of the letter follows the correct BC Mail syntax')

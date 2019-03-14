@@ -28,7 +28,7 @@ Feature: PDF Letter Delivery
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
-    And the letter has status "not delivered"
+    And the letter has status "not sent"
     And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
@@ -45,7 +45,7 @@ Feature: PDF Letter Delivery
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
-    And the letter has status "not delivered"
+    And the letter has status "not sent"
     And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
@@ -61,7 +61,7 @@ Feature: PDF Letter Delivery
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
-    And the letter has status "not delivered"
+    And the letter has status "not sent"
     And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
@@ -76,7 +76,7 @@ Feature: PDF Letter Delivery
     When a document of type <output_type> is generated from template <template_key> using data context <context_path>
     And a request is made to create a letter in the BC Mail folder that references the document in the DES
     Then a letter referencing the document is created in the DES
-    And the letter has status "not delivered"
+    And the letter has status "not sent"
     And the file name of the letter follows the correct BC Mail syntax
 
     Examples: templates and contexts
