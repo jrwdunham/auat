@@ -11,12 +11,13 @@ ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # These may also be overridden as Behave userdata options
 # (https://pythonhosted.org/behave/new_and_noteworthy_v1.2.5.html#index-7),
 # i.e., ``behave -D dgs_url=https://... -D dgs_access_token=secret``
-DGS_URL = "http://127.0.0.1:61780/micros/dgs/v1/api/"
-DGS_ACCESS_TOKEN = "nope"
-ESS_URL = "http://127.0.0.1:61780/micros/ess/v1/api/"
-ESS_ACCESS_TOKEN = "nope"
-DES_URL = "http://127.0.0.1:61780/micros/des/v1/api/"
-DES_ACCESS_TOKEN = "nope"
+DGS_URL = 'http://127.0.0.1:61780/micros/dgs/v1/api/'
+DGS_ACCESS_TOKEN = 'nope'
+ESS_URL = 'http://127.0.0.1:61780/micros/ess/v1/api/'
+ESS_ACCESS_TOKEN = 'nope'
+DES_URL = 'http://127.0.0.1:61780/micros/des/v1/api/'
+DES_ACCESS_TOKEN = 'nope'
+DES_INBOX_PATH = '/var/lib/desdata/inbox/'
 
 DRIVER_NAME = 'Chrome'
 
@@ -57,6 +58,8 @@ def get_tsbc_nc_user(userdata):
         'ess_access_token': userdata.get('ess_access_token', ESS_ACCESS_TOKEN),
         'des_url': userdata.get('des_url', DES_URL),
         'des_access_token': userdata.get('des_access_token', DES_ACCESS_TOKEN),
+        'des_inbox_accessible': (userdata.get('des_inbox_accessible', 'false') == 'true'),
+        'des_inbox_path': userdata.get('des_inbox_path', DES_INBOX_PATH),
         'tester_email': userdata.get('tester_email', None),
         'tester_email_password': userdata.get(
             'tester_email_password',
