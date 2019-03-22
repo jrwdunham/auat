@@ -49,6 +49,12 @@ def str2bool(thing):
     return False
 
 
+def get_des_inbox_accessible(val):
+    if isinstance(val, bool):
+        return val
+    return val.lower() in ('true', 'yes', 'y', 't', '1')
+
+
 def get_tsbc_nc_user(userdata):
     """Instantiate a TSBCNCUser."""
     userdata.update({
@@ -58,7 +64,8 @@ def get_tsbc_nc_user(userdata):
         'ess_access_token': userdata.get('ess_access_token', ESS_ACCESS_TOKEN),
         'des_url': userdata.get('des_url', DES_URL),
         'des_access_token': userdata.get('des_access_token', DES_ACCESS_TOKEN),
-        'des_inbox_accessible': (userdata.get('des_inbox_accessible', 'false') == 'true'),
+        'des_inbox_accessible': get_des_inbox_accessible(
+            userdata.get('des_inbox_accessible', False)),
         'des_inbox_path': userdata.get('des_inbox_path', DES_INBOX_PATH),
         'tester_email': userdata.get('tester_email', None),
         'tester_email_password': userdata.get(
