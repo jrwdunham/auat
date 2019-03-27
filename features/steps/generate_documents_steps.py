@@ -1,13 +1,12 @@
 """Steps for features involving document generation."""
 
-from collections import namedtuple
 import logging
 import os
 import pprint
 
 from behave import when, then, given, use_step_matcher
 
-from features.steps import utils
+from features.steps.utils import internalize_url, Recipe
 from features.steps.expected_pdf_texts import (
     TEXTS_AR_OP_FRIENDLY_REMINDER_CONSOLIDATED_LETTER,
     TEXTS_AR_OP_PAST_DUE_CONSOLIDATED_LETTER,
@@ -76,7 +75,7 @@ def step_impl(context, document_description):
         'application/pdf': lambda d: d,
         'text/html': context.user.dgs.minify_html_file,}.get(
             generated_document_params['output_type'])
-    url = utils.internalize_url(
+    url = internalize_url(
         generate_document_response['url'])
     context.scenario.downloaded_doc_path = (
         context.user.dgs.download_mds_doc_and_write_to_disk(
@@ -121,11 +120,6 @@ def step_impl(context):
 
 # Utils
 # ------------------------------------------------------------------------------
-
-# A "recipe" deterministically defines how to generate a document of type otype
-# from template using context.
-Recipe = namedtuple('Recipe', 'template, context, otype')
-
 
 FEE_DESCRIPTION_TH = (
     '<th style="background-color: #F4F5F7; border: 1px solid #C1C7D0; margin:'

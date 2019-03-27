@@ -109,6 +109,27 @@ class DGSAPIAbility(base.Base):
         context_str = dgs_client.get_context_str(context_path)
         return dgs_client.issue_generate_and_store_request(config, context_str)
 
+    def generate_document_get_resp(
+            self, template_key, context_path, output_type='text/html'):
+        config = self.dgs_client_config
+        config['key'] = template_key
+        config['output_type'] = output_type
+        context_path = self.verify_context_path(context_path)
+        context_str = dgs_client.get_context_str(context_path)
+        generate_and_store_url = dgs_client.get_generate_and_store_by_key_url(
+            config, config['key'])
+        payload = {'output_type': config['output_type'],
+                   'context': context_str}
+        return requests.post(
+            generate_and_store_url,
+            data=payload,
+            headers=dgs_client.get_auth_headers(config),)
+
+    def fetch(self, url):
+        return requests.get(
+            url,
+            headers=dgs_client.get_auth_headers(self.dgs_client_config))
+
     @staticmethod
     def minify_html(html_str):
         """Rewrite the HTML document at ``html_path`` after minifying it."""
